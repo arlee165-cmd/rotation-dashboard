@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACNT 순환정책 발표자료 (2026 Q2)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: #0f172a;
+  }
+
+  /* Slide Container */
+  .deck {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .slide.prev {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* Backgrounds */
+  .bg-dark { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f1f5f9; }
+  .bg-white { background: #ffffff; color: #1e293b; }
+  .bg-light { background: #f8fafc; color: #1e293b; }
+  .bg-blue { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; }
+  .bg-amber { background: linear-gradient(135deg, #78350f 0%, #b45309 100%); color: #ffffff; }
+  .bg-teal { background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%); color: #ffffff; }
+  .bg-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #0d9488 100%); color: #ffffff; }
+
+  /* Typography */
+  .slide-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+  .slide-title {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .slide-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.7;
+    line-height: 1.6;
+  }
+  .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -0.5px;
+  }
+  .section-title .accent { color: #2563eb; }
+  .bg-dark .section-title .accent { color: #60a5fa; }
+
+  /* Big Number */
+  .big-number {
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .big-unit {
+    font-size: 24px;
+    font-weight: 400;
+    opacity: 0.5;
+    margin-left: 4px;
+  }
+
+  /* KPI Row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+  }
+  .kpi-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+  .kpi-box:hover { transform: scale(1.03); }
+  .kpi-box .kpi-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+  .kpi-box .kpi-label {
+    font-size: 14px;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .kpi-box .kpi-value {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+  }
+  .kpi-box .kpi-sub {
+    font-size: 13px;
+    opacity: 0.5;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .kpi-box.amber { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+  .kpi-box.blue { border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.08); }
+  .kpi-box.teal { border-color: rgba(20,184,166,0.3); background: rgba(20,184,166,0.08); }
+  .kpi-box.amber .kpi-value { color: #fbbf24; }
+  .kpi-box.blue .kpi-value { color: #60a5fa; }
+  .kpi-box.teal .kpi-value { color: #5eead4; }
+
+  /* Table */
+  .s-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .s-table th {
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .s-table td {
+    padding: 14px 20px;
+  }
+
+  .bg-white .s-table th { background: #f1f5f9; color: #64748b; border-bottom: 1px solid #e2e8f0; }
+  .bg-white .s-table td { border-bottom: 1px solid #f1f5f9; color: #334155; }
+  .bg-light .s-table th { background: #e2e8f0; color: #475569; border-bottom: 1px solid #cbd5e1; }
+  .bg-light .s-table td { border-bottom: 1px solid #e2e8f0; color: #334155; }
+
+  .bg-dark .s-table th { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .bg-dark .s-table td { border-bottom: 1px solid rgba(255,255,255,0.05); color: #e2e8f0; }
+
+  .bg-amber .s-table th, .bg-blue .s-table th, .bg-teal .s-table th {
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .bg-amber .s-table td, .bg-blue .s-table td, .bg-teal .s-table td {
+    border-bottom: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.9);
+  }
+
+  .td-label { font-weight: 500; opacity: 0.6; width: 150px; white-space: nowrap; }
+  .td-highlight { font-weight: 700; }
+
+  /* Two Column */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .two-col-60 {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  /* Cards */
+  .card {
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .bg-white .card { background: #f8fafc; border: 1px solid #e2e8f0; }
+  .bg-light .card { background: #ffffff; border: 1px solid #e2e8f0; }
+  .bg-dark .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+  .card-label { font-size: 13px; font-weight: 500; opacity: 0.5; margin-bottom: 8px; }
+  .card-value { font-size: 36px; font-weight: 900; letter-spacing: -1px; }
+  .card-sub { font-size: 12px; opacity: 0.5; margin-top: 6px; }
+
+  /* Bar */
+  .h-bar { margin-bottom: 16px; }
+  .h-bar-label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .h-bar-track {
+    height: 36px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .bg-dark .h-bar-track { background: rgba(255,255,255,0.08); }
+  .h-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding-left: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    transition: width 1.2s ease;
+  }
+
+  /* Flow */
+  .flow-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 24px;
+  }
+  .flow-step {
+    flex: 1;
+    text-align: center;
+    padding: 20px 10px;
+  }
+  .flow-num {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+  .bg-white .flow-num { background: #2563eb; color: white; }
+  .bg-amber .flow-num { background: rgba(255,255,255,0.25); color: white; }
+  .flow-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .flow-desc { font-size: 12px; opacity: 0.6; line-height: 1.6; }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    opacity: 0.3;
+    padding: 0 4px;
+  }
+
+  /* Compare Table */
+  .cmp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .cmp-table thead th {
+    padding: 16px 18px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .cmp-table thead th:first-child { background: #475569; color: #fff; }
+  .cmp-table thead th:nth-child(2) { background: #b45309; color: #fff; }
+  .cmp-table thead th:nth-child(3) { background: #1e40af; color: #fff; }
+  .cmp-table thead th:nth-child(4) { background: #0f766e; color: #fff; }
+  .cmp-table tbody td {
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: top;
+  }
+  .cmp-table tbody td:first-child {
+    text-align: left;
+    color: #64748b;
+    font-weight: 600;
+    background: #f8fafc;
+  }
+  .cmp-table tbody tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  .tag-amber { background: rgba(245,158,11,0.15); color: #b45309; }
+  .tag-blue { background: rgba(59,130,246,0.15); color: #2563eb; }
+  .tag-teal { background: rgba(20,184,166,0.15); color: #0d9488; }
+
+  /* Result Cards Grid */
+  .result-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .r-card {
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .bg-white .r-card, .bg-light .r-card { background: #f1f5f9; }
+  .bg-dark .r-card { background: rgba(255,255,255,0.06); }
+  .bg-blue .r-card, .bg-amber .r-card, .bg-teal .r-card { background: rgba(255,255,255,0.1); }
+  .r-card .r-label { font-size: 12px; opacity: 0.5; margin-bottom: 8px; font-weight: 500; }
+  .r-card .r-val { font-size: 40px; font-weight: 900; letter-spacing: -1px; }
+  .r-card .r-sub { font-size: 11px; opacity: 0.4; margin-top: 6px; }
+
+  /* Dept Bars */
+  .dept-bar-item {
+    display: grid;
+    grid-template-columns: 180px 1fr 70px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .bg-white .dept-bar-item, .bg-light .dept-bar-item { border-bottom-color: #f1f5f9; }
+  .dept-bar-item:last-child { border-bottom: none; }
+  .dept-bar-name { font-size: 14px; font-weight: 600; }
+  .dept-bar-track {
+    height: 32px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .bg-white .dept-bar-track, .bg-light .dept-bar-track { background: #e2e8f0; }
+  .bg-dark .dept-bar-track { background: rgba(255,255,255,0.08); }
+  .dept-bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    min-width: 40px;
+  }
+  .dept-bar-pct { font-size: 15px; font-weight: 700; text-align: right; }
+
+  /* Concern Table */
+  .concern-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0;
+    margin-bottom: 2px;
+  }
+  .concern-row:first-child > div { border-radius: 10px 10px 0 0; }
+  .concern-row:last-child > div { border-radius: 0 0 10px 10px; }
+  .concern-q {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .concern-a {
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+  .bg-white .concern-q { background: #fef3c7; color: #92400e; }
+  .bg-white .concern-a { background: #f0fdf4; color: #166534; }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 100;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-bar .page-info {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+  }
+  .nav-bar .page-info .current { color: rgba(255,255,255,0.9); font-weight: 700; }
+  .nav-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active { background: #60a5fa; width: 24px; border-radius: 4px; }
+  .nav-dot.section-amber.active { background: #f59e0b; }
+  .nav-dot.section-blue.active { background: #3b82f6; }
+  .nav-dot.section-teal.active { background: #14b8a6; }
+  .nav-btns { display: flex; gap: 8px; }
+  .nav-btn {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+
+  /* Bullet list */
+  .bullet-list { list-style: none; padding: 0; }
+  .bullet-list li {
+    padding: 10px 0;
+    font-size: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.6;
+  }
+  .bullet-list li::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.3;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .bg-white .highlight-box { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+  .bg-dark .highlight-box { background: rgba(96,165,250,0.1); border-left: 4px solid #60a5fa; color: #93c5fd; }
+  .bg-amber .highlight-box { background: rgba(255,255,255,0.1); border-left: 4px solid rgba(255,255,255,0.4); }
+  .bg-blue .highlight-box { background: rgba(255,255,255,0.1); border-left: 4px solid rgba(255,255,255,0.4); }
+  .bg-teal .highlight-box { background: rgba(255,255,255,0.1); border-left: 4px solid rgba(255,255,255,0.4); }
+  .bg-light .highlight-box { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+
+  /* Badge inline */
+  .inline-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  /* Watermark */
+  .slide-watermark {
+    position: absolute;
+    bottom: 70px;
+    right: 40px;
+    font-size: 11px;
+    opacity: 0.2;
+    font-weight: 500;
+  }
+
+  /* Effect pill */
+  .effect-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .effect-card {
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .bg-teal .effect-card { background: rgba(255,255,255,0.1); }
+  .effect-card .e-icon { font-size: 32px; margin-bottom: 10px; }
+  .effect-card .e-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .effect-card .e-desc { font-size: 13px; opacity: 0.7; line-height: 1.5; }
+
+  /* Responsive adjustments */
+  @media (max-width: 1200px) {
+    .slide { padding: 40px 50px; }
+    .slide-title { font-size: 36px; }
+    .section-title { font-size: 26px; }
+    .big-number { font-size: 56px; }
+    .kpi-box .kpi-value { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ====== SLIDE 0: TITLE ====== -->
+  <div class="slide bg-gradient active" data-section="">
+    <div class="slide-label">2026년 2분기 적용 기준</div>
+    <div class="slide-title" style="font-size: 52px;">ACNT 순환정책<br>기획안</div>
+    <div class="slide-subtitle" style="margin-top: 16px;">
+      분석 데이터 기준일: 2026-04-08<br>
+      성과관리팀
+    </div>
+    <div class="slide-watermark">ACNT Rotation Policy 2026 Q2</div>
+  </div>
+
+  <!-- ====== SLIDE 1: AGENDA ====== -->
+  <div class="slide bg-dark" data-section="">
+    <div class="slide-label">AGENDA</div>
+    <div class="section-title">정책 구성 <span class="accent">Overview</span></div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 12px;">
+      <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 20px; padding: 32px;">
+        <div style="font-size: 48px; font-weight: 900; color: #fbbf24; margin-bottom: 8px;">01</div>
+        <div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">내부 셔플</div>
+        <div style="font-size: 14px; opacity: 0.5; line-height: 1.6;">성과 정체 ACNT를<br>포텐셜 영업자에게 재배정</div>
+        <div style="margin-top: 16px;"><span class="tag tag-amber">반기별</span></div>
+      </div>
+      <div style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 20px; padding: 32px;">
+        <div style="font-size: 48px; font-weight: 900; color: #60a5fa; margin-bottom: 8px;">02</div>
+        <div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">본사 → 비인적</div>
+        <div style="font-size: 14px; opacity: 0.5; line-height: 1.6;">무접촉·저매출 ACNT를<br>비인적으로 이동</div>
+        <div style="margin-top: 16px;"><span class="tag tag-blue">분기별</span></div>
+      </div>
+      <div style="background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.2); border-radius: 20px; padding: 32px;">
+        <div style="font-size: 48px; font-weight: 900; color: #5eead4; margin-bottom: 8px;">03</div>
+        <div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">비인적 → 본사</div>
+        <div style="font-size: 14px; opacity: 0.5; line-height: 1.6;">잠재 매출 ACNT에<br>영업담당자 배정</div>
+        <div style="margin-top: 16px;"><span class="tag tag-teal">분기별</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 2: KPI SUMMARY ====== -->
+  <div class="slide bg-dark" data-section="">
+    <div class="slide-label">KEY METRICS</div>
+    <div class="section-title">분석 결과 <span class="accent">핵심 수치</span></div>
+    <div class="kpi-row">
+      <div class="kpi-box amber">
+        <div class="kpi-icon">&#8644;</div>
+        <div class="kpi-label">내부 셔플 대상</div>
+        <div class="kpi-value">1,278</div>
+        <div class="kpi-sub">본사 27,028건 중 <b>4.7%</b><br>YoY 50%↓ + 접촉O + 유료</div>
+      </div>
+      <div class="kpi-box blue">
+        <div class="kpi-icon">&#8595;</div>
+        <div class="kpi-label">본사 → 비인적 대상</div>
+        <div class="kpi-value">2,435</div>
+        <div class="kpi-sub">본사 27,028건 중 <b>9.0%</b><br>무접촉 + 월평균 ≤ 10만원</div>
+      </div>
+      <div class="kpi-box teal">
+        <div class="kpi-icon">&#8593;</div>
+        <div class="kpi-label">비인적 → 본사 대상</div>
+        <div class="kpi-value">447</div>
+        <div class="kpi-sub">비인적 7,836건 중 <b>5.7%</b><br>YoY 50%↓ + 공고O</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 3: 내부 셔플 - 배경 ====== -->
+  <div class="slide bg-amber" data-section="amber">
+    <div class="slide-label">01 &nbsp; 내부 셔플</div>
+    <div class="slide-title">성과 정체 ACNT,<br>새로운 조합으로</div>
+    <div class="slide-subtitle" style="max-width: 700px;">
+      동일 영업담당자가 장기간 관리함에도 성과가 정체된 ACNT를 재배분하여,
+      영업자와 ACNT 간 <b>새로운 조합</b>을 통해 잠재 매출을 발굴하고
+      조직 전체의 생산성을 높이기 위함
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 4: 내부 셔플 - 적용기준 ====== -->
+  <div class="slide bg-white" data-section="amber">
+    <div class="slide-label" style="color: #b45309;">01 &nbsp; 내부 셔플</div>
+    <div class="section-title">적용 기준</div>
+    <div class="two-col-60">
+      <div>
+        <table class="s-table">
+          <tr><td class="td-label">시행 주기</td><td class="td-highlight">반기별 (연 1회)</td></tr>
+          <tr><td class="td-label">매출 기준</td><td class="td-highlight">YOY 빌링 매출 50% 이상 감소<br><span style="font-weight:400;color:#64748b;font-size:13px;">2025.10~2026.3 vs 2025.4~9</span></td></tr>
+          <tr><td class="td-label">접촉 조건</td><td>해당 기간 내 접촉 이력 있음<br><span style="color:#64748b;font-size:13px;">(접촉했음에도 매출 하락)</span></td></tr>
+          <tr><td class="td-label">대상 계정</td><td>유료 ACNT 중 매출 하락 계정</td></tr>
+          <tr><td class="td-label">신규할당 제외</td><td>할당일시 ≥ 2025-10-01 제외</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card" style="text-align: center;">
+          <div class="card-label">셔플 대상</div>
+          <div class="card-value" style="color: #b45309; font-size: 48px;">1,278<span style="font-size:18px;color:#94a3b8;font-weight:400;"> 건</span></div>
+          <div class="card-sub">본사 ACNT 27,028건 중 <b style="color:#b45309;">4.7%</b></div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="card-label">판정 유형</div>
+          <div style="font-size: 15px; font-weight: 600; color: #b45309; margin-top: 4px;">YOY 빌링 매출 50%↓</div>
+          <div class="card-sub">셔플 대상 → 포텐셜 있는 영업자에게 재배정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 5: 내부 셔플 - 소명 프로세스 ====== -->
+  <div class="slide bg-white" data-section="amber">
+    <div class="slide-label" style="color: #b45309;">01 &nbsp; 내부 셔플</div>
+    <div class="section-title">소명 프로세스</div>
+    <p style="font-size: 15px; color: #64748b; margin-bottom: 8px; line-height: 1.6;">
+      이관 전 해당 영업담당자에게 <b style="color:#1e293b;">소명 기회를 부여</b>하여, 관계 단절 우려가 있거나 단기 특수 상황으로 인한 매출 하락임을 확인
+    </p>
+    <div class="flow-row">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-title">1차 리스트 도출</div>
+        <div class="flow-desc">YoY 50%↓ 조건<br>자동 추출</div>
+      </div>
+      <div class="flow-arrow">&#10140;</div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-title">소명서 제출</div>
+        <div class="flow-desc">영업담당자<br>1주일 이내</div>
+      </div>
+      <div class="flow-arrow">&#10140;</div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-title">심사 확정</div>
+        <div class="flow-desc">
+          <span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;">인정 → 제외</span><br>
+          <span style="background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;margin-top:4px;display:inline-block;">불인정 → 셔플</span>
+        </div>
+      </div>
+      <div class="flow-arrow">&#10140;</div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-title">성과 추적</div>
+        <div class="flow-desc">셔플 완료 후<br>1분기 모니터링</div>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top: 32px;">
+      <b>고성과자 기준:</b> 반기 월평균 매출이 팀 평균 이상인 영업자<br>
+      셔플 대상 리스트는 포텐셜 있는 영업자에게 우선 배정하여 매출 회복 가능성을 높임
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 6: 내부 셔플 - 부서별 현황 ====== -->
+  <div class="slide bg-light" data-section="amber">
+    <div class="slide-label" style="color: #b45309;">01 &nbsp; 내부 셔플</div>
+    <div class="section-title">부서별 셔플 대상 현황</div>
+    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">부서별 전체 ACNT 대비 셔플 대상 비율</div>
+
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">AM엔터프라이즈영업팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 23.4%; background: linear-gradient(90deg, #b45309, #f59e0b);">18 / 993</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #b45309;">1.8%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">JK기업영업1팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 57.1%; background: linear-gradient(90deg, #b45309, #f59e0b);">502 / 11,453</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #b45309;">4.4%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">JK기업영업2팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 59.7%; background: linear-gradient(90deg, #b45309, #f59e0b);">540 / 11,742</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #b45309;">4.6%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name" style="color: #b45309;">KA영업팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 100%; background: linear-gradient(90deg, #b45309, #f59e0b);">218 / 2,840</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #b45309; font-size: 17px;">7.7%</div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 28px;">
+      KA영업팀이 <b>7.7%</b>로 부서 내 비율이 가장 높음 — 중점 관리 필요
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 7: 본사→비인적 - 배경 ====== -->
+  <div class="slide bg-blue" data-section="blue">
+    <div class="slide-label">02 &nbsp; 본사 → 비인적 이동</div>
+    <div class="slide-title">무접촉·저매출 ACNT,<br>비인적으로 전환</div>
+    <div class="slide-subtitle" style="max-width: 720px;">
+      실질적 영업 접촉이 없고 매출이 매우 낮은 ACNT를 비인적으로 이동하여
+      <b>영업 자원의 효율을 높이고 이컴(E) 채널 활성화</b><br><br>
+      E/S(E) 매출 비중이 높은 ACNT는 영업자 개입 없이도 자발적 구매가 이루어지므로,
+      비인적 전환을 통해 영업자는 더 높은 잠재력을 가진 ACNT에 집중
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 8: 본사→비인적 - 적용기준 ====== -->
+  <div class="slide bg-white" data-section="blue">
+    <div class="slide-label" style="color: #2563eb;">02 &nbsp; 본사 → 비인적 이동</div>
+    <div class="section-title">적용 기준 및 분석 결과</div>
+    <div class="two-col-60">
+      <div>
+        <table class="s-table">
+          <tr><td class="td-label">시행 주기</td><td class="td-highlight">분기별 (연 3회)</td></tr>
+          <tr><td class="td-label">접촉 조건</td><td class="td-highlight">Q1 2026 (1~3월) 접촉 합계 = 0</td></tr>
+          <tr><td class="td-label">매출 조건</td><td>반기(2025.10~2026.03) 월평균 ≤ 100,000원</td></tr>
+          <tr><td class="td-label">신규할당 제외</td><td>할당일시 ≥ 2025-10-01 제외</td></tr>
+        </table>
+        <div style="margin-top: 20px; font-size: 13px; color: #64748b; font-weight: 500; margin-bottom: 10px;">매출 유형 구분</div>
+        <table class="s-table">
+          <tr><td class="td-label">완전 무매출</td><td>반기 매출 합계 = 0원</td></tr>
+          <tr><td class="td-label">소액 매출</td><td>반기 월평균 1원 ~ 100,000원</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card" style="text-align:center;">
+          <div class="card-label">전체 대상</div>
+          <div class="card-value" style="color: #2563eb; font-size: 48px;">2,435<span style="font-size:18px;color:#94a3b8;font-weight:400;"> 건</span></div>
+          <div class="card-sub">본사 ACNT 27,028건 중 <b style="color:#2563eb;">9.0%</b></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="card" style="text-align:center; padding: 20px;">
+            <div class="card-label">E+S(E) ≥ 70%</div>
+            <div class="card-value" style="color: #4f46e5; font-size: 32px;">777</div>
+            <div class="card-sub">이동 1순위</div>
+          </div>
+          <div class="card" style="text-align:center; padding: 20px;">
+            <div class="card-label">E+S(E) ≥ 50%</div>
+            <div class="card-value" style="color: #7c3aed; font-size: 32px;">877</div>
+            <div class="card-sub">이동 2순위</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 9: 본사→비인적 - E/S(E) 비율 + 부서별 ====== -->
+  <div class="slide bg-light" data-section="blue">
+    <div class="slide-label" style="color: #2563eb;">02 &nbsp; 본사 → 비인적 이동</div>
+    <div class="section-title">부서별 비인적 이동 대상 현황</div>
+    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">부서별 전체 ACNT 대비 비인적 이동 대상 비율</div>
+
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">AM엔터프라이즈영업팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 37%; background: linear-gradient(90deg, #1e40af, #3b82f6);">47 / 993</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #2563eb;">4.7%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name" style="color: #2563eb;">JK기업영업1팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 100%; background: linear-gradient(90deg, #1e40af, #3b82f6);">1,450 / 11,453</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #2563eb; font-size: 17px;">12.7%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">JK기업영업2팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 53.5%; background: linear-gradient(90deg, #1e40af, #3b82f6);">800 / 11,742</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #2563eb;">6.8%</div>
+    </div>
+    <div class="dept-bar-item">
+      <div class="dept-bar-name">KA영업팀</div>
+      <div class="dept-bar-track" style="background:#e2e8f0;">
+        <div class="dept-bar-fill" style="width: 38.6%; background: linear-gradient(90deg, #1e40af, #3b82f6);">138 / 2,840</div>
+      </div>
+      <div class="dept-bar-pct" style="color: #2563eb;">4.9%</div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 28px;">
+      JK기업영업1팀이 <b>12.7%</b>로 부서 내 비율이 가장 높음 — E+S(E) ≥70% 기준 이동 1순위 <b>777건</b> 우선 적용 권장
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 10: 본사→비인적 - 우려사항 ====== -->
+  <div class="slide bg-white" data-section="blue">
+    <div class="slide-label" style="color: #2563eb;">02 &nbsp; 본사 → 비인적 이동</div>
+    <div class="section-title">우려사항 및 해결방안</div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px;">
+      <div style="display: grid; grid-template-columns: 1fr 1.8fr; border-radius: 12px; overflow: hidden;">
+        <div style="background: #fef3c7; padding: 20px 24px; font-weight: 600; color: #92400e; font-size: 15px; display: flex; align-items: center;">비인적 전환 후 매출 감소 우려</div>
+        <div style="background: #f0fdf4; padding: 20px 24px; color: #166534; font-size: 15px; display: flex; align-items: center;">전환 후 <b style="margin: 0 4px;">1개 분기 모니터링</b> → 매출 이상 시 본사 재이관</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1.8fr; border-radius: 12px; overflow: hidden;">
+        <div style="background: #fef3c7; padding: 20px 24px; font-weight: 600; color: #92400e; font-size: 15px; display: flex; align-items: center;">영업자의 고객 관계 단절</div>
+        <div style="background: #f0fdf4; padding: 20px 24px; color: #166534; font-size: 15px; display: flex; align-items: center;">이관 전 영업자에게 <b style="margin: 0 4px;">사전 고지 및 인수인계 절차</b> 마련</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1.8fr; border-radius: 12px; overflow: hidden;">
+        <div style="background: #fef3c7; padding: 20px 24px; font-weight: 600; color: #92400e; font-size: 15px; display: flex; align-items: center;">경계선상(소액) ACNT의 잠재력 손실</div>
+        <div style="background: #f0fdf4; padding: 20px 24px; color: #166534; font-size: 15px; display: flex; align-items: center;">E+S(E) 비율이 낮은 ACNT는 <b style="margin: 0 4px;">소명 기회 부여</b> 후 결정</div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 28px;">
+      E+S(E) 비율 기준 2단계 분류: <b>≥ 70%</b> (1순위, 777건) / <b>≥ 50%</b> (2순위, 877건)으로 단계적 적용
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 11: 비인적→본사 - 배경 ====== -->
+  <div class="slide bg-teal" data-section="teal">
+    <div class="slide-label">03 &nbsp; 비인적 → 본사 이관</div>
+    <div class="slide-title">잠재 매출 ACNT,<br>영업 개입으로 회복</div>
+    <div class="slide-subtitle" style="max-width: 720px;">
+      비인적 ACNT 중, <b>잠재 매출이 높고 현재 매출이 하락하는 ACNT</b>에
+      본사 영업담당자를 배정하여 관계 기반 업세일링 기회를 발굴
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 12: 비인적→본사 - 적용기준 ====== -->
+  <div class="slide bg-white" data-section="teal">
+    <div class="slide-label" style="color: #0d9488;">03 &nbsp; 비인적 → 본사 이관</div>
+    <div class="section-title">적용 기준 및 분석 결과</div>
+    <div class="two-col-60">
+      <div>
+        <table class="s-table">
+          <tr><td class="td-label">시행 주기</td><td class="td-highlight">분기별 (연 3회)</td></tr>
+          <tr><td class="td-label">YoY 매출 조건</td><td class="td-highlight">YoY 50% 이하 하락<br><span style="font-weight:400;color:#64748b;font-size:13px;">Q1 2026 vs Q1 2025</span></td></tr>
+          <tr><td class="td-label">공고 조건</td><td>해당 기간 내 공고 게재 이력 있음</td></tr>
+          <tr><td class="td-label">직전반기 매출</td><td>전반기(H2 2025) 월평균 ≥ 300,000원</td></tr>
+        </table>
+        <div style="margin-top: 20px; font-size: 13px; color: #64748b; font-weight: 500; margin-bottom: 8px;">조건 해설</div>
+        <ul class="bullet-list" style="font-size: 14px;">
+          <li><b>YoY 50%↓</b> — 활성 고객이었음을 전제 → 영업 개입 시 회복 가능성</li>
+          <li><b>공고 이력</b> — 채용 수요 있음 → 유료 상품 연결 여지</li>
+          <li><b>전반기 ≥ 30만원</b> — 구매력 검증된 ACNT만 대상 → 자원 낭비 방지</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card" style="text-align:center;">
+          <div class="card-label">이관 대상</div>
+          <div class="card-value" style="color: #0d9488; font-size: 48px;">447<span style="font-size:18px;color:#94a3b8;font-weight:400;"> 건</span></div>
+          <div class="card-sub">비인적 ACNT 7,836건 중 <b style="color:#0d9488;">5.7%</b></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="card" style="text-align:center; padding: 20px;">
+            <div class="card-label">월평균 ≤ 30만</div>
+            <div class="card-value" style="color: #0f766e; font-size: 28px;">447</div>
+            <div class="card-sub">99.8%</div>
+          </div>
+          <div class="card" style="text-align:center; padding: 20px;">
+            <div class="card-label">월평균 ≤ 20만</div>
+            <div class="card-value" style="color: #0d9488; font-size: 28px;">446</div>
+            <div class="card-sub">99.8%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 13: 비인적→본사 - 기대효과 ====== -->
+  <div class="slide bg-teal" data-section="teal">
+    <div class="slide-label">03 &nbsp; 비인적 → 본사 이관</div>
+    <div class="section-title" style="color: white;">기대 효과</div>
+    <div class="effect-grid">
+      <div class="effect-card">
+        <div class="e-icon">&#128200;</div>
+        <div class="e-title">매출 회복</div>
+        <div class="e-desc">이탈 직전 ACNT<br>조기 개입으로 매출 유지</div>
+      </div>
+      <div class="effect-card">
+        <div class="e-icon">&#128640;</div>
+        <div class="e-title">업세일링</div>
+        <div class="e-desc">공고 니즈 기반<br>유료 상품 업그레이드 제안</div>
+      </div>
+      <div class="effect-card">
+        <div class="e-icon">&#129309;</div>
+        <div class="e-title">고객 관계 강화</div>
+        <div class="e-desc">비인적 → 본사 전환 시<br>고객 만족도 향상</div>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top: 32px;">
+      비인적 채널 특성상 매출 규모가 작아 전반기 매출 조건(월평균 ≥ 50만)은 사실상 적용 불가.<br>
+      매출 상한 조건(≤ 30만 / ≤ 20만)도 거의 전부 해당하여 실질적 필터링 효과 없음 → <b>YoY + 공고 조건이 핵심 필터</b>
+    </div>
+  </div>
+
+  <!-- ====== SLIDE 14: 종합 비교표 ====== -->
+  <div class="slide bg-white" data-section="">
+    <div class="slide-label" style="color: #64748b;">SUMMARY</div>
+    <div class="section-title">종합 비교표</div>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th style="width: 130px;">구분</th>
+          <th>내부 셔플</th>
+          <th>본사 → 비인적</th>
+          <th>비인적 → 본사</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>시행 주기</td>
+          <td><span class="tag tag-amber">반기</span></td>
+          <td><span class="tag tag-blue">분기</span></td>
+          <td><span class="tag tag-teal">분기</span></td>
+        </tr>
+        <tr>
+          <td>핵심 조건</td>
+          <td>YoY빌링 50%↓<br>+ 접촉O + 유료</td>
+          <td>무접촉<br>+ 월평균 ≤ 10만원</td>
+          <td>YoY 50%↓<br>+ 공고O + 전반기 ≥30만</td>
+        </tr>
+        <tr>
+          <td>신규할당 제외</td>
+          <td>≥ 2025-10-01</td>
+          <td>≥ 2025-10-01</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>전체 ACNT</td>
+          <td style="color: #94a3b8;">27,028건</td>
+          <td style="color: #94a3b8;">27,028건</td>
+          <td style="color: #94a3b8;">7,836건</td>
+        </tr>
+        <tr>
+          <td>대상 건수</td>
+          <td style="font-weight: 700; color: #b45309;">1,278건 <span style="font-weight:400;font-size:12px;color:#94a3b8;">(4.7%)</span></td>
+          <td style="font-weight: 700; color: #2563eb;">2,435건 <span style="font-weight:400;font-size:12px;color:#94a3b8;">(9.0%)</span></td>
+          <td style="font-weight: 700; color: #0d9488;">447건 <span style="font-weight:400;font-size:12px;color:#94a3b8;">(5.7%)</span></td>
+        </tr>
+        <tr>
+          <td>목적</td>
+          <td>포텐셜 영업자에게<br>재배정</td>
+          <td>영업 자원 효율화<br>이컴 활성화</td>
+          <td>업세일링<br>기회 발굴</td>
+        </tr>
+        <tr>
+          <td>특이사항</td>
+          <td>소명 프로세스 적용</td>
+          <td>E+S(E) 비율<br>50%/70% 2단계</td>
+          <td>비인적 특성상<br>매출 상한 무의미</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== SLIDE 15: 마무리 ====== -->
+  <div class="slide bg-gradient" data-section="">
+    <div class="slide-label">WRAP-UP</div>
+    <div class="slide-title" style="font-size: 42px;">순환정책 핵심 요약</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px;">
+      <div style="background: rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; text-align: center;">
+        <div style="font-size: 14px; opacity: 0.6; margin-bottom: 8px;">내부 셔플</div>
+        <div style="font-size: 40px; font-weight: 900; color: #fbbf24;">1,278건</div>
+        <div style="font-size: 13px; opacity: 0.5; margin-top: 8px;">매출 하락에도 접촉한 ACNT 재배정</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; text-align: center;">
+        <div style="font-size: 14px; opacity: 0.6; margin-bottom: 8px;">본사 → 비인적</div>
+        <div style="font-size: 40px; font-weight: 900; color: #60a5fa;">2,435건</div>
+        <div style="font-size: 13px; opacity: 0.5; margin-top: 8px;">무접촉·저매출 ACNT 이컴 전환</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; text-align: center;">
+        <div style="font-size: 14px; opacity: 0.6; margin-bottom: 8px;">비인적 → 본사</div>
+        <div style="font-size: 40px; font-weight: 900; color: #5eead4;">447건</div>
+        <div style="font-size: 13px; opacity: 0.5; margin-top: 8px;">잠재력 ACNT 영업 개입 회복</div>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 48px; font-size: 16px; opacity: 0.5;">
+      대시보드: arlee165-cmd.github.io/rotation-dashboard<br>
+      <span style="font-size: 13px;">성과관리팀 &nbsp;|&nbsp; 2026-04-10</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <div class="page-info"><span class="current" id="pageNum">1</span> / <span id="totalPages">16</span></div>
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prev()" title="이전 (←)">&#8592;</button>
+    <button class="nav-btn" onclick="next()" title="다음 (→)">&#8594;</button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  document.getElementById('totalPages').textContent = total;
+
+  // Build nav dots
+  const dotsContainer = document.getElementById('navDots');
+  slides.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot';
+    const sec = s.dataset.section;
+    if (sec) dot.classList.add('section-' + sec);
+    dot.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  function goTo(n) {
+    if (n < 0 || n >= total || n === current) return;
+    const dir = n > current ? 1 : -1;
+    slides[current].classList.remove('active');
+    slides[current].classList.add(dir > 0 ? 'prev' : '');
+    slides[current].style.transform = dir > 0 ? 'translateX(-60px)' : 'translateX(60px)';
+
+    current = n;
+    slides[current].classList.remove('prev');
+    slides[current].classList.add('active');
+
+    document.getElementById('pageNum').textContent = current + 1;
+    updateDots();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function updateDots() {
+    const dots = dotsContainer.querySelectorAll('.nav-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+  updateDots();
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+  });
+</script>
+
+</body>
+</html>
