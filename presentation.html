@@ -1027,14 +1027,28 @@
   function goTo(n) {
     if (n < 0 || n >= total || n === current) return;
     const dir = n > current ? 1 : -1;
-    slides[current].classList.remove('active');
-    slides[current].classList.add(dir > 0 ? 'prev' : '');
-    slides[current].style.transform = dir > 0 ? 'translateX(-60px)' : 'translateX(60px)';
+
+    // Hide departing slide
+    const old = slides[current];
+    old.classList.remove('active');
+    old.style.transform = dir > 0 ? 'translateX(-60px)' : 'translateX(60px)';
+    old.style.opacity = '0';
+
+    // Prepare incoming slide: place it on the correct side instantly (no transition)
+    const next = slides[n];
+    next.style.transition = 'none';
+    next.style.transform = dir > 0 ? 'translateX(60px)' : 'translateX(-60px)';
+    next.style.opacity = '0';
+    // Force reflow so the instant positioning takes effect
+    void next.offsetWidth;
+
+    // Now restore transition and animate to active position
+    next.style.transition = '';
+    next.classList.add('active');
+    next.style.transform = '';
+    next.style.opacity = '';
 
     current = n;
-    slides[current].classList.remove('prev');
-    slides[current].classList.add('active');
-
     document.getElementById('pageNum').textContent = current + 1;
     updateDots();
   }
