@@ -96,6 +96,82 @@
     line-height: 1.5;
   }
 
+  /* KPI brand split */
+  .kpi-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .kpi-split-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .kpi-split-item .brand {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .kpi-split-item .brand.jk { color: #1e40af; }
+  .kpi-split-item .brand.am { color: #be185d; }
+  .kpi-split-item .num {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #1e293b;
+  }
+  .kpi-split-item .num .denom {
+    font-size: 12px;
+    font-weight: 400;
+    color: #94a3b8;
+  }
+  .kpi-split-item .pct {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  /* Brand badge used in tab/section headers */
+  .brand-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+    margin-right: 6px;
+  }
+  .brand-badge.jk { background: rgba(30,64,175,0.1); color: #1e40af; }
+  .brand-badge.am { background: rgba(190,24,93,0.1); color: #be185d; }
+
+  /* Side-by-side criteria panels */
+  .criteria-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .criteria-col {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+  }
+  .criteria-col.jk { border-top: 3px solid #1e40af; }
+  .criteria-col.am { border-top: 3px solid #be185d; }
+  .criteria-col h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .criteria-col.jk h4 { color: #1e40af; }
+  .criteria-col.am h4 { color: #be185d; }
+  .criteria-col .policy-table { margin-bottom: 0; }
+
   /* Section */
   .section {
     background: #fff;
@@ -390,7 +466,7 @@
 
 <div class="header">
   <h1>ACNT 순환정책 대시보드</h1>
-  <div class="sub">2026년 2분기 적용 기준 | 분석 데이터 기준일: 2026-04-08</div>
+  <div class="sub">2026년 2분기 적용 기준 | JK + AM 통합 | 분석 데이터 기준일: 2026-04-13</div>
 </div>
 
 <!-- KPI Cards -->
@@ -398,20 +474,56 @@
   <div class="kpi-card amber">
     <div class="icon">&#8644;</div>
     <div class="label">내부 셔플</div>
-    <div class="value">1,278 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 27,028</span></div>
-    <div class="desc">본사 ACNT 27,028건 중 4.7% 해당<br>반기 YoY 50%↓ + 접촉O + 유료</div>
+    <div class="value">1,845 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 51,479</span></div>
+    <div class="desc">반기 YoY 50%↓ + 접촉O + 유료</div>
+    <div class="kpi-split">
+      <div class="kpi-split-item">
+        <div class="brand jk">JK</div>
+        <div class="num">1,278 <span class="denom">/ 27,028</span></div>
+        <div class="pct">4.7%</div>
+      </div>
+      <div class="kpi-split-item">
+        <div class="brand am">AM</div>
+        <div class="num">567 <span class="denom">/ 24,451</span></div>
+        <div class="pct">2.3%</div>
+      </div>
+    </div>
   </div>
   <div class="kpi-card blue">
     <div class="icon">&#8595;</div>
     <div class="label">본사 → 비인적 이동</div>
-    <div class="value">2,435 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 27,028</span></div>
-    <div class="desc">본사 ACNT 27,028건 중 9.0% 해당<br>E+S(E) ≥ 70%: 777건 | ≥ 50%: 877건</div>
+    <div class="value">3,604 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 51,479</span></div>
+    <div class="desc">무접촉 + 월평균 ≤ 10만</div>
+    <div class="kpi-split">
+      <div class="kpi-split-item">
+        <div class="brand jk">JK</div>
+        <div class="num">2,435 <span class="denom">/ 27,028</span></div>
+        <div class="pct">9.0% · E+S(E)≥70% 777</div>
+      </div>
+      <div class="kpi-split-item">
+        <div class="brand am">AM</div>
+        <div class="num">1,169 <span class="denom">/ 24,451</span></div>
+        <div class="pct">4.8% · S(E)≥70% 1,135</div>
+      </div>
+    </div>
   </div>
   <div class="kpi-card teal">
     <div class="icon">&#8593;</div>
     <div class="label">비인적 → 본사 이관</div>
-    <div class="value">447 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 7,836</span></div>
-    <div class="desc">비인적 ACNT 7,836건 중 5.7% 해당<br>Q1 YoY 50%↓ + 공고O</div>
+    <div class="value">2,145 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 49,346</span></div>
+    <div class="desc">Q1 YoY 50%↓ + 공고O</div>
+    <div class="kpi-split">
+      <div class="kpi-split-item">
+        <div class="brand jk">JK</div>
+        <div class="num">447 <span class="denom">/ 7,836</span></div>
+        <div class="pct">5.7%</div>
+      </div>
+      <div class="kpi-split-item">
+        <div class="brand am">AM</div>
+        <div class="num">1,698 <span class="denom">/ 41,510</span></div>
+        <div class="pct">4.1%</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -424,7 +536,8 @@
   </div>
   <div class="tab-bar">
     <button class="tab-btn amber active" onclick="switchTab('shuffle','cond')">세부조건</button>
-    <button class="tab-btn amber" onclick="switchTab('shuffle','dept')">부서별 현황</button>
+    <button class="tab-btn amber" onclick="switchTab('shuffle','dept-jk')">부서별 현황 (JK)</button>
+    <button class="tab-btn amber" onclick="switchTab('shuffle','dept-am')">부서별 현황 (AM)</button>
   </div>
 
   <!-- 세부조건 탭 -->
@@ -439,13 +552,19 @@
         <tr><td class="label-cell">처리 방향</td><td>셔플 대상 → 포텐셜 있는 영업자에게 재배정</td></tr>
       </table>
 
-      <div class="result-grid" style="grid-template-columns: 1fr;">
-        <div class="result-card" style="padding: 24px;">
-          <div class="r-label">셔플 대상 (YoY 50%↓ + 접촉O + 유료)</div>
-          <div class="r-value" style="color: #b45309; font-size: 40px;">1,278 <span style="font-size: 20px; font-weight: 400; color: #94a3b8;">/ 27,028건</span></div>
-          <div class="r-sub">본사 ACNT 전체 27,028건 중 4.7% | 소명 프로세스 적용 후 최종 확정</div>
+      <div class="result-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="result-card" style="padding: 20px; border-top: 3px solid #1e40af;">
+          <div class="r-label"><span class="brand-badge jk">JK</span>셔플 대상</div>
+          <div class="r-value" style="color: #b45309; font-size: 34px;">1,278 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 27,028</span></div>
+          <div class="r-sub">JK 본사 ACNT 중 4.7%</div>
+        </div>
+        <div class="result-card" style="padding: 20px; border-top: 3px solid #be185d;">
+          <div class="r-label"><span class="brand-badge am">AM</span>셔플 대상</div>
+          <div class="r-value" style="color: #b45309; font-size: 34px;">567 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 24,451</span></div>
+          <div class="r-sub">AM 본사 ACNT 중 2.3%</div>
         </div>
       </div>
+      <div class="note" style="margin-top: 10px;">소명 프로세스 적용 후 최종 확정</div>
 
       <div class="divider"></div>
       <div style="font-size: 13px; color: #64748b; margin-bottom: 14px; font-weight: 500;">소명 프로세스</div>
@@ -487,21 +606,11 @@
     </div>
   </div>
 
-  <!-- 부서별 현황 탭 -->
-  <div id="shuffle-dept" class="tab-panel">
+  <!-- 부서별 현황 탭 (JK) -->
+  <div id="shuffle-dept-jk" class="tab-panel">
     <div class="section-body">
-      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;">부서별 전체 ACNT 대비 셔플 대상 비율</div>
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;"><span class="brand-badge jk">JK</span>부서별 전체 ACNT 대비 셔플 대상 비율</div>
       <div class="dept-chart">
-        <div class="dept-row">
-          <div class="dept-name">AM엔터프라이즈영업팀</div>
-          <div class="dept-bar-track">
-            <div class="dept-bar-fill" style="width: 23.6%; background: linear-gradient(90deg, #b45309, #f59e0b);">
-              <span>18 / 993</span>
-            </div>
-          </div>
-          <div class="dept-count-text" style="color: #b45309;">18</div>
-          <div class="dept-pct" style="color: #b45309;">1.8%</div>
-        </div>
         <div class="dept-row">
           <div class="dept-name">JK기업영업1팀</div>
           <div class="dept-bar-track">
@@ -532,10 +641,53 @@
           <div class="dept-count-text" style="color: #b45309;">218</div>
           <div class="dept-pct" style="color: #b45309;">7.7%</div>
         </div>
+        <div class="dept-row">
+          <div class="dept-name">AM엔터프라이즈영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 23.6%; background: linear-gradient(90deg, #b45309, #f59e0b);">
+              <span>18 / 993</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #b45309;">18</div>
+          <div class="dept-pct" style="color: #b45309;">1.8%</div>
+        </div>
       </div>
       <div class="note" style="margin-top: 16px;">
-        비율 = 해당 부서 셔플 대상 건수 / 해당 부서 전체 ACNT 수<br>
+        JK 셔플 대상 합계: <b>1,278건</b> / 27,028건 (4.7%)<br>
         KA영업팀이 7.7%로 부서 내 비율이 가장 높음
+      </div>
+    </div>
+  </div>
+
+  <!-- 부서별 현황 탭 (AM) -->
+  <div id="shuffle-dept-am" class="tab-panel">
+    <div class="section-body">
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;"><span class="brand-badge am">AM</span>부서별 전체 ACNT 대비 셔플 대상 비율</div>
+      <div class="dept-chart">
+        <div class="dept-row">
+          <div class="dept-name">AM기업영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 100%; background: linear-gradient(90deg, #b45309, #f59e0b);">
+              <span>544 / 23,177</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #b45309;">544</div>
+          <div class="dept-pct" style="color: #b45309;">2.3%</div>
+        </div>
+        <div class="dept-row">
+          <div class="dept-name">AM엔터프라이즈영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 72.5%; background: linear-gradient(90deg, #b45309, #f59e0b);">
+              <span>23 / 1,334</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #b45309;">23</div>
+          <div class="dept-pct" style="color: #b45309;">1.7%</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top: 16px;">
+        AM 셔플 대상 합계: <b>567건</b> / 24,451건 (2.3%)<br>
+        AM기업영업팀이 2.3%로 부서 내 비율이 가장 높음
       </div>
     </div>
   </div>
@@ -550,74 +702,112 @@
   </div>
   <div class="tab-bar">
     <button class="tab-btn blue active" onclick="switchTab('biin','cond')">세부조건</button>
-    <button class="tab-btn blue" onclick="switchTab('biin','dept')">부서별 현황</button>
+    <button class="tab-btn blue" onclick="switchTab('biin','dept-jk')">부서별 현황 (JK)</button>
+    <button class="tab-btn blue" onclick="switchTab('biin','dept-am')">부서별 현황 (AM)</button>
   </div>
 
   <!-- 세부조건 탭 -->
   <div id="biin-cond" class="tab-panel active">
     <div class="section-body">
-      <table class="policy-table">
-        <tr><td class="label-cell">시행 주기</td><td>분기별 (연 3회)</td></tr>
-        <tr><td class="label-cell">접촉 조건</td><td>Q1 2026 (1~3월) 접촉 합계 = 0</td></tr>
-        <tr><td class="label-cell">매출 조건</td><td>반기(2025.10~2026.03) 월평균 ≤ 100,000원</td></tr>
-        <tr><td class="label-cell">신규할당 제외</td><td>할당일시 ≥ 2025-10-01 제외</td></tr>
-        <tr><td class="label-cell">목적</td><td>영업 자원 효율화 / 이컴(E) 채널 활성화</td></tr>
-      </table>
+      <div class="criteria-split">
+        <div class="criteria-col jk">
+          <h4><span class="brand-badge jk">JK</span>기준</h4>
+          <table class="policy-table">
+            <tr><td class="label-cell">시행 주기</td><td>분기별 (연 3회)</td></tr>
+            <tr><td class="label-cell">접촉 조건</td><td>Q1 2026 (1~3월) 접촉 합계 = 0</td></tr>
+            <tr><td class="label-cell">매출 조건</td><td>반기 월평균 ≤ 100,000원</td></tr>
+            <tr><td class="label-cell">신규할당 제외</td><td>할당일시 ≥ 2025-10-01</td></tr>
+            <tr><td class="label-cell">S(E) 카테고리</td><td>E(이컴), S(E), S(D)</td></tr>
+          </table>
+        </div>
+        <div class="criteria-col am">
+          <h4><span class="brand-badge am">AM</span>기준</h4>
+          <table class="policy-table">
+            <tr><td class="label-cell">시행 주기</td><td>분기별 (연 3회)</td></tr>
+            <tr><td class="label-cell">접촉 조건</td><td>Q1 2026 (1~3월) 접촉 합계 = 0</td></tr>
+            <tr><td class="label-cell">매출 조건</td><td>반기 월평균 ≤ 100,000원</td></tr>
+            <tr><td class="label-cell">신규할당 제외</td><td>할당일시 ≥ 2025-10-01</td></tr>
+            <tr><td class="label-cell">S(E) 카테고리</td><td>S(E), S(D) (E 없음)</td></tr>
+          </table>
+        </div>
+      </div>
 
-      <div class="result-grid">
-        <div class="result-card">
-          <div class="r-label">조건1: 전체 대상</div>
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">조건별 건수</div>
+      <div class="result-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 14px;">
+        <div class="result-card" style="border-top: 3px solid #1e40af;">
+          <div class="r-label"><span class="brand-badge jk">JK</span>조건1: 전체 대상</div>
           <div class="r-value" style="color: #2563eb;">2,435 <span style="font-size: 14px; font-weight: 400; color: #94a3b8;">/ 27,028</span></div>
           <div class="r-sub">본사 ACNT 중 9.0%</div>
         </div>
-        <div class="result-card">
-          <div class="r-label">E+S(E) ≥ 70%</div>
+        <div class="result-card" style="border-top: 3px solid #1e40af;">
+          <div class="r-label"><span class="brand-badge jk">JK</span>E+S(E) ≥ 70%</div>
           <div class="r-value" style="color: #4f46e5;">777</div>
           <div class="r-sub">이동 1순위</div>
         </div>
-        <div class="result-card">
-          <div class="r-label">E+S(E) ≥ 50%</div>
+        <div class="result-card" style="border-top: 3px solid #1e40af;">
+          <div class="r-label"><span class="brand-badge jk">JK</span>E+S(E) ≥ 50%</div>
           <div class="r-value" style="color: #7c3aed;">877</div>
+          <div class="r-sub">이동 2순위</div>
+        </div>
+      </div>
+      <div class="result-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="result-card" style="border-top: 3px solid #be185d;">
+          <div class="r-label"><span class="brand-badge am">AM</span>조건1: 전체 대상</div>
+          <div class="r-value" style="color: #be185d;">1,169 <span style="font-size: 14px; font-weight: 400; color: #94a3b8;">/ 24,451</span></div>
+          <div class="r-sub">본사 ACNT 중 4.8%</div>
+        </div>
+        <div class="result-card" style="border-top: 3px solid #be185d;">
+          <div class="r-label"><span class="brand-badge am">AM</span>S(E) ≥ 70%</div>
+          <div class="r-value" style="color: #a21caf;">1,135</div>
+          <div class="r-sub">이동 1순위</div>
+        </div>
+        <div class="result-card" style="border-top: 3px solid #be185d;">
+          <div class="r-label"><span class="brand-badge am">AM</span>S(E) ≥ 50%</div>
+          <div class="r-value" style="color: #86198f;">34</div>
           <div class="r-sub">이동 2순위</div>
         </div>
       </div>
 
       <div class="divider"></div>
-      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">E+S(E) 비율 분포</div>
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">E+S(E) / S(E) 비율 분포</div>
       <div class="bar-chart">
         <div class="bar-row">
-          <div class="bar-label">≥ 70%</div>
+          <div class="bar-label"><span class="brand-badge jk">JK</span>≥ 70%</div>
           <div class="bar-track">
-            <div class="bar-fill" style="width: 31.9%; background: linear-gradient(90deg, #3b82f6, #818cf8);">31.9%</div>
+            <div class="bar-fill" style="width: 31.9%; background: linear-gradient(90deg, #1e40af, #3b82f6);">31.9%</div>
           </div>
           <div class="bar-count" style="color: #4f46e5;">777</div>
         </div>
         <div class="bar-row">
-          <div class="bar-label">≥ 50%</div>
+          <div class="bar-label"><span class="brand-badge jk">JK</span>≥ 50%</div>
           <div class="bar-track">
-            <div class="bar-fill" style="width: 36.0%; background: linear-gradient(90deg, #6366f1, #a78bfa);">36.0%</div>
+            <div class="bar-fill" style="width: 36.0%; background: linear-gradient(90deg, #3b82f6, #818cf8);">36.0%</div>
           </div>
           <div class="bar-count" style="color: #7c3aed;">877</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span class="brand-badge am">AM</span>≥ 70%</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: 97.1%; background: linear-gradient(90deg, #be185d, #ec4899);">97.1%</div>
+          </div>
+          <div class="bar-count" style="color: #a21caf;">1,135</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span class="brand-badge am">AM</span>≥ 50%</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: 2.9%; background: linear-gradient(90deg, #ec4899, #f9a8d4);">2.9%</div>
+          </div>
+          <div class="bar-count" style="color: #86198f;">34</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 부서별 현황 탭 -->
-  <div id="biin-dept" class="tab-panel">
+  <!-- 부서별 현황 탭 (JK) -->
+  <div id="biin-dept-jk" class="tab-panel">
     <div class="section-body">
-      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;">부서별 전체 ACNT 대비 비인적 이동 대상 비율</div>
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;"><span class="brand-badge jk">JK</span>부서별 전체 ACNT 대비 비인적 이동 대상 비율</div>
       <div class="dept-chart">
-        <div class="dept-row">
-          <div class="dept-name">AM엔터프라이즈영업팀</div>
-          <div class="dept-bar-track">
-            <div class="dept-bar-fill" style="width: 37.4%; background: linear-gradient(90deg, #1e40af, #3b82f6);">
-              <span>47 / 993</span>
-            </div>
-          </div>
-          <div class="dept-count-text" style="color: #2563eb;">47</div>
-          <div class="dept-pct" style="color: #2563eb;">4.7%</div>
-        </div>
         <div class="dept-row">
           <div class="dept-name">JK기업영업1팀</div>
           <div class="dept-bar-track">
@@ -648,10 +838,53 @@
           <div class="dept-count-text" style="color: #2563eb;">138</div>
           <div class="dept-pct" style="color: #2563eb;">4.9%</div>
         </div>
+        <div class="dept-row">
+          <div class="dept-name">AM엔터프라이즈영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 37.4%; background: linear-gradient(90deg, #1e40af, #3b82f6);">
+              <span>47 / 993</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #2563eb;">47</div>
+          <div class="dept-pct" style="color: #2563eb;">4.7%</div>
+        </div>
       </div>
       <div class="note" style="margin-top: 16px;">
-        비율 = 해당 부서 비인적 이동 대상 건수 / 해당 부서 전체 ACNT 수<br>
+        JK 비인적 이동 대상 합계: <b>2,435건</b> / 27,028건 (9.0%)<br>
         JK기업영업1팀이 12.7%로 부서 내 비율이 가장 높음
+      </div>
+    </div>
+  </div>
+
+  <!-- 부서별 현황 탭 (AM) -->
+  <div id="biin-dept-am" class="tab-panel">
+    <div class="section-body">
+      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 4px; font-weight: 500;"><span class="brand-badge am">AM</span>부서별 전체 ACNT 대비 비인적 이동 대상 비율</div>
+      <div class="dept-chart">
+        <div class="dept-row">
+          <div class="dept-name">AM기업영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 100%; background: linear-gradient(90deg, #be185d, #ec4899);">
+              <span>1,163 / 23,177</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #be185d;">1,163</div>
+          <div class="dept-pct" style="color: #be185d;">5.0%</div>
+        </div>
+        <div class="dept-row">
+          <div class="dept-name">AM엔터프라이즈영업팀</div>
+          <div class="dept-bar-track">
+            <div class="dept-bar-fill" style="width: 9.0%; background: linear-gradient(90deg, #be185d, #ec4899);">
+              <span>6 / 1,334</span>
+            </div>
+          </div>
+          <div class="dept-count-text" style="color: #be185d;">6</div>
+          <div class="dept-pct" style="color: #be185d;">0.4%</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top: 16px;">
+        AM 비인적 이동 대상 합계: <b>1,169건</b> / 24,451건 (4.8%)<br>
+        AM기업영업팀이 5.0%로 부서 내 비율이 가장 높음
       </div>
     </div>
   </div>
@@ -672,48 +905,23 @@
       <tr><td class="label-cell">목적</td><td>업세일링 기회 발굴</td></tr>
     </table>
 
-    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">매출 상한 기준</div>
-    <div class="result-grid">
-      <div class="result-card">
-        <div class="r-label">조건1: YoY↓ + 공고O</div>
-        <div class="r-value" style="color: #0d9488;">447 <span style="font-size: 14px; font-weight: 400; color: #94a3b8;">/ 7,836</span></div>
-        <div class="r-sub">비인적 ACNT 중 5.7%</div>
+    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">조건1: YoY 50%↓ + 공고O</div>
+    <div class="result-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="result-card" style="padding: 20px; border-top: 3px solid #1e40af;">
+        <div class="r-label"><span class="brand-badge jk">JK</span>비인적 → 본사 이관</div>
+        <div class="r-value" style="color: #0d9488; font-size: 34px;">447 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 7,836</span></div>
+        <div class="r-sub">JK 비인적 ACNT 중 5.7%</div>
       </div>
-      <div class="result-card">
-        <div class="r-label">+ 월평균 ≤ 30만</div>
-        <div class="r-value" style="color: #0f766e;">447</div>
-        <div class="r-sub">99.8%</div>
-      </div>
-      <div class="result-card">
-        <div class="r-label">+ 월평균 ≤ 20만</div>
-        <div class="r-value" style="color: #0d9488;">446</div>
-        <div class="r-sub">99.8%</div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 500;">H2 2025 전반기 매출 회차 기준</div>
-    <div class="result-grid">
-      <div class="result-card">
-        <div class="r-label">H2 50만↑ 2회</div>
-        <div class="r-value" style="color: #94a3b8;">0</div>
-        <div class="r-sub">해당 없음</div>
-      </div>
-      <div class="result-card">
-        <div class="r-label">H2 30만↑ 2회</div>
-        <div class="r-value" style="color: #0d9488;">3</div>
-        <div class="r-sub">0.7%</div>
-      </div>
-      <div class="result-card">
-        <div class="r-label">H2 20만↑ 2회</div>
-        <div class="r-value" style="color: #0f766e;">8</div>
-        <div class="r-sub">1.8%</div>
+      <div class="result-card" style="padding: 20px; border-top: 3px solid #be185d;">
+        <div class="r-label"><span class="brand-badge am">AM</span>비인적 → 본사 이관</div>
+        <div class="r-value" style="color: #0d9488; font-size: 34px;">1,698 <span style="font-size: 16px; font-weight: 400; color: #94a3b8;">/ 41,510</span></div>
+        <div class="r-sub">AM 비인적 ACNT 중 4.1%</div>
       </div>
     </div>
 
     <div class="note">
-      비인적 채널 특성상 매출 규모가 작아 전반기 매출 조건(월평균 ≥ 50만)은 사실상 적용 불가.<br>
-      매출 상한 조건(≤ 30만 / ≤ 20만)도 거의 전부 해당하여 실질적 필터링 효과 없음.
+      비인적 채널 특성상 매출 규모가 작아 전반기 매출 상한 조건은 제외.<br>
+      YoY 50%↓ + Q1 2026 공고 게재 2개 조건만 적용.
     </div>
   </div>
 </div>
@@ -761,16 +969,24 @@
         </tr>
         <tr>
           <td>전체 ACNT</td>
-          <td style="color: #94a3b8;">27,028건</td>
-          <td style="color: #94a3b8;">27,028건</td>
-
-          <td style="color: #94a3b8;">7,836건</td>
+          <td style="color: #94a3b8;">JK 27,028 / AM 24,451</td>
+          <td style="color: #94a3b8;">JK 27,028 / AM 24,451</td>
+          <td style="color: #94a3b8;">JK 7,836 / AM 41,510</td>
         </tr>
         <tr>
           <td>대상 건수</td>
-          <td style="font-weight: 700; color: #b45309;">1,278건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(4.7%)</span></td>
-          <td style="font-weight: 700; color: #2563eb;">2,435건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(9.0%)</span><br><span style="font-weight: 400; font-size: 11px; color: #94a3b8;">E+S(E)≥70%: 777건</span></td>
-          <td style="font-weight: 700; color: #0d9488;">447건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(5.7%)</span></td>
+          <td style="font-weight: 700; color: #b45309;">
+            <span style="font-size: 11px; color: #1e40af; font-weight: 600;">JK</span> 1,278건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(4.7%)</span><br>
+            <span style="font-size: 11px; color: #be185d; font-weight: 600;">AM</span> 567건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(2.3%)</span>
+          </td>
+          <td style="font-weight: 700; color: #2563eb;">
+            <span style="font-size: 11px; color: #1e40af; font-weight: 600;">JK</span> 2,435건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(9.0%, E+S(E)≥70% 777)</span><br>
+            <span style="font-size: 11px; color: #be185d; font-weight: 600;">AM</span> 1,169건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(4.8%, S(E)≥70% 1,135)</span>
+          </td>
+          <td style="font-weight: 700; color: #0d9488;">
+            <span style="font-size: 11px; color: #1e40af; font-weight: 600;">JK</span> 447건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(5.7%)</span><br>
+            <span style="font-size: 11px; color: #be185d; font-weight: 600;">AM</span> 1,698건 <span style="font-weight: 400; font-size: 11px; color: #94a3b8;">(4.1%)</span>
+          </td>
         </tr>
         <tr>
           <td>목적</td>
@@ -781,8 +997,8 @@
         <tr>
           <td>특이사항</td>
           <td>소명 프로세스 적용</td>
-          <td>E+S(E) 비율<br>50%/70% 2단계</td>
-          <td>비인적 특성상<br>매출 상한 무의미</td>
+          <td>JK: E+S(E), AM: S(E)<br>50%/70% 2단계</td>
+          <td>YoY+공고만 적용<br>(매출 상한 제외)</td>
         </tr>
       </tbody>
     </table>
@@ -790,35 +1006,34 @@
 </div>
 
 <div class="footer">
-  작성일: 2026-04-10 &nbsp;|&nbsp; 성과관리팀 이아람
+  작성일: 2026-04-13 &nbsp;|&nbsp; 성과관리팀 이아람 &nbsp;|&nbsp; JK + AM 통합 기준
 </div>
 
 <script>
 function switchTab(section, tab) {
+  var panelIds = ['cond', 'dept-jk', 'dept-am'];
   // 해당 섹션의 모든 패널 숨기기
-  document.getElementById(section + '-cond').classList.remove('active');
-  document.getElementById(section + '-dept').classList.remove('active');
+  panelIds.forEach(function(p) {
+    var el = document.getElementById(section + '-' + p);
+    if (el) el.classList.remove('active');
+  });
   // 선택된 패널 표시
-  document.getElementById(section + '-' + tab).classList.add('active');
-  // 버튼 상태 업데이트
-  var tabBar = document.getElementById(section + '-' + tab).previousElementSibling;
-  while (tabBar && !tabBar.classList.contains('tab-bar')) {
-    tabBar = tabBar.previousElementSibling;
-  }
-  if (!tabBar) {
-    // fallback: find via parent
-    var parent = document.getElementById(section + '-cond').parentElement;
-    tabBar = parent.querySelector('.tab-bar');
-  }
+  var target = document.getElementById(section + '-' + tab);
+  if (target) target.classList.add('active');
+
+  // 버튼 상태 업데이트: 섹션 내 tab-bar 찾기
+  var sectionRoot = document.getElementById(section + '-cond').parentElement;
+  var tabBar = sectionRoot.querySelector('.tab-bar');
   if (tabBar) {
     tabBar.querySelectorAll('.tab-btn').forEach(function(btn) {
       btn.classList.remove('active');
     });
-    // activate clicked tab
     var btns = tabBar.querySelectorAll('.tab-btn');
     btns.forEach(function(btn) {
-      if (tab === 'cond' && btn.textContent.includes('세부조건')) btn.classList.add('active');
-      if (tab === 'dept' && btn.textContent.includes('부서별')) btn.classList.add('active');
+      var txt = btn.textContent;
+      if (tab === 'cond' && txt.indexOf('세부조건') !== -1) btn.classList.add('active');
+      if (tab === 'dept-jk' && txt.indexOf('JK') !== -1) btn.classList.add('active');
+      if (tab === 'dept-am' && txt.indexOf('AM') !== -1) btn.classList.add('active');
     });
   }
 }
