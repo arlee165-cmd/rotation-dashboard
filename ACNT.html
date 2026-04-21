@@ -656,6 +656,119 @@ td.center { text-align: center; }
 </section>
 
 <!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 2b: 최근 2개월 접촉상태 (할당일시 이후 접촉 기준) -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-2b">
+<h2 class="section-header">■ 영업자 ACNT 접촉 상태 (최근 2개월 접촉상태)</h2>
+<div class="table-wrapper"><table>
+<thead>
+  <tr class="hd-top">
+    <th>사이트</th>
+    <th>부서</th>
+    <th>인원</th>
+    <th>총 ACNT</th>
+    <th>인당 평균</th>
+    <th style="background:#1B6B35;">접촉있음</th>
+    <th style="background:#8B2020;">접촉없음</th>
+    <th>접촉률</th>
+    <th>판정</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="site-label site-jk" rowspan="4">JK</td>
+    <td>JK기업영업1팀</td>
+    <td class="num">12</td><td class="num">11,636</td>
+    <td class="num">969.7</td>
+    <td class="num" style="background:#EBF7EE;">2,341</td>
+    <td class="num" style="background:#FDECEA;">9,295</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">20.1%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>JK기업영업2팀</td>
+    <td class="num">11</td><td class="num">11,694</td>
+    <td class="num">1,063.1</td>
+    <td class="num" style="background:#EBF7EE;">2,950</td>
+    <td class="num" style="background:#FDECEA;">8,744</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">25.2%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>KA영업팀</td>
+    <td class="num">11</td><td class="num">2,750</td>
+    <td class="num">250.0</td>
+    <td class="num" style="background:#EBF7EE;">1,332</td>
+    <td class="num" style="background:#FDECEA;">1,418</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">48.4%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(JK)</td>
+    <td class="num">9</td><td class="num">903</td>
+    <td class="num">100.3</td>
+    <td class="num" style="background:#EBF7EE;">72</td>
+    <td class="num" style="background:#FDECEA;">831</td>
+    <td class="num" style="background:#FDECEA;font-weight:700;">8.0%</td>
+    <td class="center"><span class="badge badge-warn">미흡</span></td>
+  </tr>
+  <tr>
+    <td class="site-label site-am" rowspan="2">AM</td>
+    <td>AM기업영업팀</td>
+    <td class="num">10</td><td class="num">22,995</td>
+    <td class="num">2,299.5</td>
+    <td class="num" style="background:#EBF7EE;">9,718</td>
+    <td class="num" style="background:#FDECEA;">13,277</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">42.3%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(AM)</td>
+    <td class="num">11</td><td class="num">1,193</td>
+    <td class="num">108.5</td>
+    <td class="num" style="background:#EBF7EE;">327</td>
+    <td class="num" style="background:#FDECEA;">866</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">27.4%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr class="total-row">
+    <td class="total-label" colspan="2">합계</td>
+    <td class="num">64</td><td class="num">51,171</td>
+    <td class="num">799.5</td>
+    <td class="num" style="background:#EBF7EE;">16,740</td>
+    <td class="num" style="background:#FDECEA;">34,431</td>
+    <td class="num">32.7%</td>
+    <td class="center">—</td>
+  </tr>
+  <tr class="note-row">
+    <td colspan="9">※ 분석 기간: 2026-02 ~ 2026-03 (2개월) &nbsp;|&nbsp; 판정 로직: 할당월 이후 접촉 발생 시 '접촉있음' (할당 이전 접촉은 무효) &nbsp;|&nbsp; 접촉률 ≥ 40% 양호 / 20~40% 주의 / 20% 미만 미흡</td>
+  </tr>
+</tbody>
+</table></div>
+
+<div class="chart-area">
+  <div class="chart-grid-2x2">
+    <!-- JK 최근 2개월 접촉률 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 최근 2개월 접촉률 JK (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2b_recent_jk"></canvas></div>
+    </div>
+    <!-- AM 최근 2개월 접촉률 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 최근 2개월 접촉률 AM (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2b_recent_am"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
 <!-- 섹션 3: E+S(E) 분석                                -->
 <!-- ══════════════════════════════════════════════════ -->
 <section id="section-3">
@@ -1014,6 +1127,49 @@ new Chart(document.getElementById('chart_s2_contact_am'), {
   },
   options: contactStackOpts
 });
+
+// ── 차트: 최근 2개월 접촉률 — JK/AM 분리 (할당월 이후 접촉 기준) ──
+(function() {
+  const recentJkLabels    = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+  const recentJkContacted = [20.1, 25.2, 48.4,  8.0];
+  const recentJkNoContact = [79.9, 74.8, 51.6, 92.0];
+
+  const recentAmLabels    = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+  const recentAmContacted = [42.3, 27.4];
+  const recentAmNoContact = [57.7, 72.6];
+
+  const recentStackOpts = {
+    ...baseOpts(v => v + '%'),
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 10 }, maxRotation: 30 } },
+      y: { stacked: true, beginAtZero: true, max: 100, ticks: { font: { size: 10 }, callback: v => v + '%' } }
+    }
+  };
+
+  new Chart(document.getElementById('chart_s2b_recent_jk'), {
+    type: 'bar',
+    data: {
+      labels: recentJkLabels,
+      datasets: [
+        { label: '접촉있음 %', data: recentJkContacted, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+        { label: '접촉없음 %', data: recentJkNoContact, backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+      ]
+    },
+    options: recentStackOpts
+  });
+
+  new Chart(document.getElementById('chart_s2b_recent_am'), {
+    type: 'bar',
+    data: {
+      labels: recentAmLabels,
+      datasets: [
+        { label: '접촉있음 %', data: recentAmContacted, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+        { label: '접촉없음 %', data: recentAmNoContact, backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+      ]
+    },
+    options: recentStackOpts
+  });
+})();
 
 // ── 차트: E+S(E) 비율 — JK/AM 분리 ──
 (function() {
