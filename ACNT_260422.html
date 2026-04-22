@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플랫폼영업본부 ACNT 현황</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── 리셋 & 기본 ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --font: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  /* 컬러 팔레트: 네이비 기반 단일 계열 */
+  --navy-900: #0F2144;   /* 가장 진한 네이비 - 헤더/섹션타이틀 */
+  --navy-700: #1F3864;   /* 짙은 네이비 - 강조 */
+  --navy-500: #2E5AAC;   /* 중간 네이비 - 포인트 */
+  --navy-400: #4472C4;   /* 밝은 네이비 - 테이블 헤더 */
+  --navy-200: #A9BEE8;   /* 연한 네이비 - 서브 헤더 */
+  --navy-100: #D6E3F7;   /* 아주 연한 - zebra/accent bg */
+  --navy-050: #EEF3FB;   /* 최연한 - 배경 */
+  /* 포인트: 앰버 (경보/강조용 단 1색) */
+  --amber:    #E67E22;
+  --amber-bg: #FEF3E2;
+  /* 상태 색상 (단순화) */
+  --good:     #1B6B35;
+  --good-bg:  #E8F5EE;
+  --warn:     #C0392B;
+  --warn-bg:  #FDECEA;
+  /* 중립 */
+  --text:     #1A2233;
+  --text-sub: #4A5568;
+  --text-muted: #718096;
+  --border:   #C8D6EF;
+  --bg:       #F2F5FA;
+  --card:     #FFFFFF;
+  --shadow:   0 2px 14px rgba(15,33,68,0.08);
+  --radius:   10px;
+}
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ── 헤더 ── */
+.page-header {
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 60%, var(--navy-500) 100%);
+  color: #fff;
+  padding: 2rem 2.5rem 1.6rem;
+  box-shadow: 0 4px 20px rgba(15,33,68,0.18);
+}
+.page-header h1 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.page-header .subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.88rem;
+  opacity: 0.75;
+}
+.toc {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.toc a {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.26rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  border: 1px solid rgba(255,255,255,0.22);
+  transition: background 0.2s;
+}
+.toc a:hover { background: rgba(255,255,255,0.28); }
+
+/* ── 메인 레이아웃 ── */
+.main { max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* ── 섹션 ── */
+section {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.section-header {
+  background: var(--navy-700);
+  color: #fff;
+  padding: 0.85rem 1.4rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-bottom: 3px solid var(--navy-500);
+}
+
+/* ── 표 ── */
+.table-wrapper {
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.81rem;
+  min-width: 600px;
+}
+
+/* 1단계 헤더: 사이트 그룹 행 */
+thead tr.hd-top th {
+  background: var(--navy-700);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--navy-500);
+  text-align: center;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+/* 2단계 헤더: 등급 서브행 */
+thead tr.hd-sub th {
+  background: var(--navy-400);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid var(--navy-200);
+  text-align: center;
+  white-space: nowrap;
+  position: sticky;
+  top: 37px;
+  z-index: 3;
+}
+/* 사이트 그룹 레이블 셀 */
+td.site-label {
+  font-weight: 700;
+  color: #FFFFFF !important;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+td.site-jk { background: var(--navy-700); color: #FFFFFF !important; font-weight: 700; }
+td.site-am { background: var(--navy-500); color: #FFFFFF !important; font-weight: 700; }
+td.site-jkam { background: #0F2144; color: #FFFFFF !important; font-weight: 700; }
+/* zebra striping이 site-jk/am 배경색을 덮어쓰는 문제 방지: specificity 강화 */
+tbody tr > td.site-jk,
+tbody tr:nth-child(odd) > td.site-jk,
+tbody tr:nth-child(even) > td.site-jk {
+  background-color: #1F3864 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+tbody tr > td.site-am,
+tbody tr:nth-child(odd) > td.site-am,
+tbody tr:nth-child(even) > td.site-am {
+  background-color: #2E5AAC !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+tbody tr > td.site-jkam,
+tbody tr:nth-child(odd) > td.site-jkam,
+tbody tr:nth-child(even) > td.site-jkam {
+  background-color: #0F2144 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  font-size: 0.78rem;
+  line-height: 1.15;
+}
+tbody tr:hover > td.site-jk { background-color: #1F3864 !important; color: #FFFFFF !important; }
+tbody tr:hover > td.site-am { background-color: #2E5AAC !important; color: #FFFFFF !important; }
+tbody tr:hover > td.site-jkam { background-color: #0F2144 !important; color: #FFFFFF !important; }
+
+/* 일반 셀 */
+td {
+  padding: 0.42rem 0.68rem;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+/* zebra striping */
+tbody tr:nth-child(odd)  > td { background: var(--card); }
+tbody tr:nth-child(even) > td { background: var(--navy-050); }
+tbody tr:hover > td { background: var(--navy-100) !important; }
+/* 합계 행 */
+tr.total-row > td {
+  background: var(--navy-100) !important;
+  font-weight: 700;
+  border-top: 2px solid var(--navy-400);
+}
+tr.total-row > td.total-label {
+  background: var(--navy-700) !important;
+  color: #fff;
+}
+/* 주석 행 */
+tr.note-row td {
+  background: #FAFBFE !important;
+  color: var(--text-muted);
+  font-size: 0.77rem;
+  font-style: italic;
+  border-top: 1px dashed var(--navy-200);
+}
+
+/* 숫자 정렬 */
+td.num { text-align: right; }
+td.center { text-align: center; }
+
+/* 상태 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 0.12rem 0.55rem;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.badge-ok   { background: var(--good-bg); color: var(--good); }
+.badge-normal { background: var(--amber-bg); color: var(--amber); }
+
+/* ── 차트 영역 ── */
+.chart-area {
+  padding: 1.2rem 1.5rem 1.6rem;
+  border-top: 1px solid var(--border);
+  background: var(--navy-050);
+}
+/* 2×2 그리드 */
+.chart-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.chart-panel {
+  background: var(--card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: 0 1px 6px rgba(15,33,68,0.05);
+}
+.chart-panel-title {
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: var(--navy-700);
+  margin-bottom: 0.7rem;
+  padding-left: 0.55rem;
+  border-left: 3px solid var(--navy-400);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.chart-panel-title .site-badge {
+  font-size: 0.73rem;
+  background: var(--navy-100);
+  color: var(--navy-700);
+  padding: 0.1rem 0.45rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.chart-panel-title .site-badge.am { background: #D9E8FF; color: var(--navy-500); }
+.chart-container {
+  position: relative;
+  max-height: 280px;
+}
+
+/* 단일 차트 패널 */
+.chart-single {
+  background: var(--card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: 0 1px 6px rgba(15,33,68,0.05);
+}
+.chart-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy-700);
+  margin-bottom: 0.7rem;
+  padding-left: 0.55rem;
+  border-left: 3px solid var(--navy-400);
+}
+
+/* ── 인사이트 카드 ── */
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 1.2rem 1.4rem 1.4rem;
+}
+.insight-card {
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  border: 1px solid transparent;
+}
+.card-warning {
+  background: var(--warn-bg);
+  border-color: #F5B8B8;
+}
+.card-good {
+  background: var(--good-bg);
+  border-color: #A8D5B5;
+}
+.insight-icon {
+  font-size: 0.95rem;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+  padding-top: 0.1rem;
+}
+.insight-body { flex: 1; }
+.insight-title {
+  font-weight: 700;
+  font-size: 0.91rem;
+  margin-bottom: 0.3rem;
+}
+.insight-desc {
+  font-size: 0.81rem;
+  color: var(--text-sub);
+  line-height: 1.55;
+}
+
+/* ── 등급 최대값 하이라이트 ── */
+.grade-top {
+  background-color: #FFE082 !important; /* 연한 앰버/골드 */
+  font-weight: 700 !important;
+  color: #1F3864 !important;
+}
+
+/* ── 반응형 ── */
+@media (max-width: 900px) {
+  .chart-grid-2x2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .page-header { padding: 1.2rem 1rem; }
+  .page-header h1 { font-size: 1.2rem; }
+  .main { padding: 1rem 0.5rem 3rem; }
+  .insight-grid { grid-template-columns: 1fr; }
+  td { font-size: 0.74rem; padding: 0.32rem 0.45rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>플랫폼영업본부 ACNT 현황</h1>
+  <div class="subtitle">2026년 4월 17일 기준 | 성과관리팀 이아람</div>
+  <div class="subtitle">ACNT 최적 분배 유지 · 신규 영업 기회 발굴 · 이컴 매출 확대를 위함</div>
+  <nav class="toc">
+    <a href="#section-1">부서별 ACNT 현황</a>
+    <a href="#section-2">접촉 상태</a>
+    <a href="#section-3">E+S(E) 분석</a>
+    <a href="#section-4">주요 인사이트</a>
+  </nav>
+</header>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 1: 부서별 ACNT 현황                            -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-1">
+<h2 class="section-header">■ 부서별 ACNT 현황 — 등급별 개수 / 비율 / 2025년 매출 (사업자번호 개수 기준)</h2>
+<div class="table-wrapper"><table>
+<thead>
+  <tr class="hd-top">
+    <th rowspan="2">사이트</th>
+    <th rowspan="2">부서</th>
+    <th rowspan="2">인원</th>
+    <th rowspan="2">총 ACNT</th>
+    <th rowspan="2">인당 ACNT 수</th>
+    <th rowspan="2">2025 매출액</th>
+    <th rowspan="2">ACNT 당 매출액</th>
+    <th rowspan="2">사업자번호 개수</th>
+    <th colspan="6">등급별 개수</th>
+    <th colspan="6">등급별 비율</th>
+    <th colspan="6">등급별 매출 (억원) 2025년 기준</th>
+  </tr>
+  <tr class="hd-sub">
+    <th>S</th><th>A</th><th>B</th><th>C</th><th>D</th><th>-</th>
+    <th>S</th><th>A</th><th>B</th><th>C</th><th>D</th><th>-</th>
+    <th>S</th><th>A</th><th>B</th><th>C</th><th>D</th><th>-</th>
+  </tr>
+</thead>
+<tbody>
+  <!-- JK 사이트 -->
+  <tr>
+    <td class="site-label site-jk" rowspan="3">JK</td>
+    <td>JK기업영업1팀</td>
+    <td class="num">12</td>
+    <td class="num">11,688</td>
+    <td class="num">974</td>
+    <td class="num">8,992,322,565</td>
+    <td class="num">769,363.7</td>
+    <td class="num">11,739</td>
+    <td class="num grade-count">173</td><td class="num grade-count">576</td><td class="num grade-count">1,378</td><td class="num grade-count">1,692</td><td class="num grade-count">3,882</td><td class="num grade-count">4,038</td>
+    <td class="num grade-ratio">1.5%</td><td class="num grade-ratio">4.9%</td><td class="num grade-ratio">11.7%</td><td class="num grade-ratio">14.4%</td><td class="num grade-ratio">33.1%</td><td class="num grade-ratio">34.4%</td>
+    <td class="num grade-revenue">3,244,062,536</td><td class="num grade-revenue">3,493,649,704</td><td class="num grade-revenue">1,246,007,844</td><td class="num grade-revenue">257,238,210</td><td class="num grade-revenue">-4,250,496</td><td class="num grade-revenue">312,807,544</td>
+  </tr>
+  <tr>
+    <td>JK기업영업2팀</td>
+    <td class="num">11</td>
+    <td class="num">11,964</td>
+    <td class="num">1,087</td>
+    <td class="num">8,776,817,004</td>
+    <td class="num">733,602.2</td>
+    <td class="num">11,438</td>
+    <td class="num grade-count">134</td><td class="num grade-count">579</td><td class="num grade-count">1,249</td><td class="num grade-count">1,620</td><td class="num grade-count">3,400</td><td class="num grade-count">4,456</td>
+    <td class="num grade-ratio">1.2%</td><td class="num grade-ratio">5.1%</td><td class="num grade-ratio">10.9%</td><td class="num grade-ratio">14.2%</td><td class="num grade-ratio">29.7%</td><td class="num grade-ratio">39.0%</td>
+    <td class="num grade-revenue">2,961,924,349</td><td class="num grade-revenue">3,385,670,100</td><td class="num grade-revenue">1,158,973,822</td><td class="num grade-revenue">245,932,532</td><td class="num grade-revenue">-300,363</td><td class="num grade-revenue">542,262,278</td>
+  </tr>
+  <tr>
+    <td>KA영업팀</td>
+    <td class="num">11</td>
+    <td class="num">2,846</td>
+    <td class="num">258</td>
+    <td class="num">9,872,181,398</td>
+    <td class="num">3,468,792</td>
+    <td class="num">2,785</td>
+    <td class="num grade-count">203</td><td class="num grade-count">385</td><td class="num grade-count">261</td><td class="num grade-count">657</td><td class="num grade-count">786</td><td class="num grade-count">492</td>
+    <td class="num grade-ratio">7.3%</td><td class="num grade-ratio">13.8%</td><td class="num grade-ratio">9.4%</td><td class="num grade-ratio">23.6%</td><td class="num grade-ratio">28.2%</td><td class="num grade-ratio">17.7%</td>
+    <td class="num grade-revenue">5,992,279,433</td><td class="num grade-revenue">3,070,216,584</td><td class="num grade-revenue">253,176,608</td><td class="num grade-revenue">11,083,191</td><td class="num grade-revenue">-19,200,000</td><td class="num grade-revenue">399,964,808</td>
+  </tr>
+  <!-- AM 사이트 -->
+  <tr>
+    <td class="site-label site-am" rowspan="1">AM</td>
+    <td>AM기업영업팀</td>
+    <td class="num">10</td>
+    <td class="num">23,419</td>
+    <td class="num">2,341</td>
+    <td class="num">8,167,079,594</td>
+    <td class="num">348,737.3</td>
+    <td class="num">23,508</td>
+    <td class="num grade-count">151</td><td class="num grade-count">845</td><td class="num grade-count">3,697</td><td class="num grade-count">8,303</td><td class="num grade-count">2,526</td><td class="num grade-count">7,986</td>
+    <td class="num grade-ratio">0.6%</td><td class="num grade-ratio">3.6%</td><td class="num grade-ratio">15.7%</td><td class="num grade-ratio">35.3%</td><td class="num grade-ratio">10.7%</td><td class="num grade-ratio">34.0%</td>
+    <td class="num grade-revenue">2,824,701,731</td><td class="num grade-revenue">2,173,009,094</td><td class="num grade-revenue">1,726,565,636</td><td class="num grade-revenue">615,839,585</td><td class="num grade-revenue">0</td><td class="num grade-revenue">361,761,150</td>
+  </tr>
+  <!-- JK+AM 사이트 (AM엔터프라이즈영업팀 통합: JK+AM 합산, 쿠팡 별도) -->
+  <tr>
+    <td class="site-label site-jkam" rowspan="2">JK+AM</td>
+    <td>AM엔터프라이즈영업팀</td>
+    <td class="num">10</td>
+    <td class="num">1,439</td>
+    <td class="num">144</td>
+    <td class="num">47,359,359,672</td>
+    <td class="num">32,911,299</td>
+    <td class="num">1,868</td>
+    <td class="num grade-count">298</td><td class="num grade-count">143</td><td class="num grade-count">132</td><td class="num grade-count">218</td><td class="num grade-count">250</td><td class="num grade-count">827</td>
+    <td class="num grade-ratio">15.95%</td><td class="num grade-ratio">7.66%</td><td class="num grade-ratio">7.07%</td><td class="num grade-ratio">11.67%</td><td class="num grade-ratio">13.38%</td><td class="num grade-ratio">44.27%</td>
+    <td class="num grade-revenue">26,219,788,954</td><td class="num grade-revenue">2,660,903,623</td><td class="num grade-revenue">326,488,972</td><td class="num grade-revenue">33,058,612</td><td class="num grade-revenue">230,000</td><td class="num grade-revenue">311,563,350</td>
+  </tr>
+  <tr>
+    <td>쿠팡</td>
+    <td class="num">1</td>
+    <td class="num">5</td>
+    <td class="num">5</td>
+    <td class="num">15,962,310,101</td>
+    <td class="num">3,192,462,020</td>
+    <td class="num">3</td>
+    <td class="num grade-count">2</td><td class="num grade-count">1</td><td class="num grade-count">0</td><td class="num grade-count">0</td><td class="num grade-count">0</td><td class="num grade-count">0</td>
+    <td class="num grade-ratio">66.67%</td><td class="num grade-ratio">33.33%</td><td class="num grade-ratio">0.00%</td><td class="num grade-ratio">0.00%</td><td class="num grade-ratio">0.00%</td><td class="num grade-ratio">0.00%</td>
+    <td class="num grade-revenue">15,962,070,101</td><td class="num grade-revenue">240,000</td><td class="num grade-revenue">0</td><td class="num grade-revenue">0</td><td class="num grade-revenue">0</td><td class="num grade-revenue">0</td>
+  </tr>
+  <!-- 합계 -->
+  <tr class="total-row">
+    <td class="total-label" colspan="2">합계</td>
+    <td class="num">55</td>
+    <td class="num">51,361</td>
+    <td class="num">4,809</td>
+    <td class="num">99,130,070,334</td>
+    <td class="num">3,230,693,814</td>
+    <td class="num">51,341</td>
+    <td class="num">961</td><td class="num">2,529</td><td class="num">6,717</td><td class="num">12,490</td><td class="num">10,844</td><td class="num">17,799</td>
+    <td class="num">1.9%</td><td class="num">4.9%</td><td class="num">13.1%</td><td class="num">24.3%</td><td class="num">21.1%</td><td class="num">34.7%</td>
+    <td class="num">57,204,827,104</td><td class="num">14,783,689,105</td><td class="num">4,711,212,882</td><td class="num">1,163,152,130</td><td class="num">-23,520,859</td><td class="num">1,928,359,130</td>
+  </tr>
+</tbody>
+</table></div>
+
+<!-- 2×2 차트 그리드 -->
+<div class="chart-area">
+  <div class="chart-grid-2x2">
+    <!-- JK: 총ACNT/사업자번호 개수 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        총 ACNT / 사업자번호 개수 현황
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container"><canvas id="chart_jk_acnt"></canvas></div>
+    </div>
+    <!-- JK: 등급별 비율 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        등급별 비율 (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container"><canvas id="chart_jk_grade"></canvas></div>
+    </div>
+    <!-- AM: 총ACNT/사업자번호 개수 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        총 ACNT / 사업자번호 개수 현황
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container"><canvas id="chart_am_acnt"></canvas></div>
+    </div>
+    <!-- AM: 등급별 비율 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        등급별 비율 (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container"><canvas id="chart_am_grade"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 2: 접촉 상태                                   -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-2">
+<h2 class="section-header">■ 영업자 ACNT 접촉 상태 2025년 접촉 상태(양호: 12회↑ / 보통: 4~11회 / 미흡: 1~3회)</h2>
+<div class="table-wrapper"><table>
+<thead>
+  <tr class="hd-top">
+    <th>사이트</th>
+    <th>부서</th>
+    <th>인원</th>
+    <th>총 ACNT</th>
+    <th style="background:#1B6B35;">양호 (12회↑)</th>
+    <th style="background:#7B5800;">보통 (4~11회)</th>
+    <th style="background:#8B2020;">미흡 (1~3회)</th>
+    <th style="background:#1B6B35;">양호 비율</th>
+    <th style="background:#7B5800;">보통 비율</th>
+    <th style="background:#8B2020;">미흡 비율</th>
+    <th>미흡 수준</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="site-label site-jk" rowspan="4">JK</td>
+    <td>JK기업영업1팀</td>
+    <td class="num">12</td><td class="num">11,688</td>
+    <td class="num" style="background:#EBF7EE;">912</td>
+    <td class="num" style="background:#FFFADC;">1,261</td>
+    <td class="num" style="background:#FDECEA;">1,604</td>
+    <td class="num" style="background:#EBF7EE;">24.1%</td>
+    <td class="num" style="background:#FFFADC;">33.4%</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">42.5%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>JK기업영업2팀</td>
+    <td class="num">11</td><td class="num">11,964</td>
+    <td class="num" style="background:#EBF7EE;">1,053</td>
+    <td class="num" style="background:#FFFADC;">1,231</td>
+    <td class="num" style="background:#FDECEA;">764</td>
+    <td class="num" style="background:#EBF7EE;">34.5%</td>
+    <td class="num" style="background:#FFFADC;">40.4%</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">25.1%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>KA영업팀</td>
+    <td class="num">11</td><td class="num">2,846</td>
+    <td class="num" style="background:#EBF7EE;">627</td>
+    <td class="num" style="background:#FFFADC;">897</td>
+    <td class="num" style="background:#FDECEA;">678</td>
+    <td class="num" style="background:#EBF7EE;">28.5%</td>
+    <td class="num" style="background:#FFFADC;">40.7%</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">30.8%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(JK)</td>
+    <td class="num">10</td><td class="num">994</td>
+    <td class="num" style="background:#EBF7EE;">15</td>
+    <td class="num" style="background:#FFFADC;">23</td>
+    <td class="num" style="background:#FDECEA;">60</td>
+    <td class="num" style="background:#EBF7EE;">15.3%</td>
+    <td class="num" style="background:#FFFADC;">23.5%</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">61.2%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td class="site-label site-am" rowspan="2">AM</td>
+    <td>AM기업영업팀</td>
+    <td class="num">10</td><td class="num">23,419</td>
+    <td class="num" style="background:#EBF7EE;">2,749</td>
+    <td class="num" style="background:#FFFADC;">8,845</td>
+    <td class="num" style="background:#FDECEA;">5,426</td>
+    <td class="num" style="background:#EBF7EE;">16.2%</td>
+    <td class="num" style="background:#FFFADC;">52.0%</td>
+    <td class="num" style="background:#FDECEA;font-weight:600;">31.9%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(AM)</td>
+    <td class="num">10</td><td class="num">1,337</td>
+    <td class="num" style="background:#EBF7EE;">285</td>
+    <td class="num" style="background:#FFFADC;">69</td>
+    <td class="num" style="background:#FDECEA;">62</td>
+    <td class="num" style="background:#EBF7EE;">68.5%</td>
+    <td class="num" style="background:#FFFADC;">16.6%</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">14.9%</td>
+    <td class="center"><span class="badge badge-normal">보통</span></td>
+  </tr>
+  <tr class="total-row">
+    <td class="total-label" colspan="2">합계</td>
+    <td class="num">65</td><td class="num">52,248</td>
+    <td class="num" style="background:#EBF7EE;">5,641</td>
+    <td class="num" style="background:#FFFADC;">12,326</td>
+    <td class="num" style="background:#FDECEA;">8,594</td>
+    <td class="num" style="background:#EBF7EE;">10.8%</td>
+    <td class="num" style="background:#FFFADC;">23.6%</td>
+    <td class="num" style="background:#FDECEA;">16.4%</td>
+    <td class="center">—</td>
+  </tr>
+  <tr class="note-row">
+    <td colspan="11">※ 미흡 비율 수준: 전체 평균 기준 ±20% 이내 = 보통, 초과 = 주의</td>
+  </tr>
+</tbody>
+</table></div>
+
+<div class="chart-area">
+  <div class="chart-grid-2x2">
+    <!-- JK 접촉 상태 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 접촉 상태 비율 JK (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2_contact_jk"></canvas></div>
+    </div>
+    <!-- AM 접촉 상태 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 접촉 상태 비율 AM (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2_contact_am"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 2b: 최근 2개월 접촉상태 (할당일시 이후 접촉 기준) -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-2b">
+<h2 class="section-header">■ 영업자 ACNT 접촉 상태 (최근 2개월 접촉상태)</h2>
+<div class="table-wrapper"><table>
+<thead>
+  <tr class="hd-top">
+    <th>사이트</th>
+    <th>부서</th>
+    <th>인원</th>
+    <th>총 ACNT</th>
+    <th>인당 평균</th>
+    <th style="background:#7B5800;">신규할당</th>
+    <th>유효 ACNT</th>
+    <th style="background:#1B6B35;">접촉있음</th>
+    <th style="background:#8B2020;">접촉없음</th>
+    <th>접촉률</th>
+    <th>판정</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="site-label site-jk" rowspan="4">JK</td>
+    <td>JK기업영업1팀</td>
+    <td class="num">12</td><td class="num">11,688</td>
+    <td class="num">974</td>
+    <td class="num" style="background:#FFFADC;">5,445</td>
+    <td class="num">6,243</td>
+    <td class="num" style="background:#EBF7EE;">1,437</td>
+    <td class="num" style="background:#FDECEA;">4,806</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">23.0%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>JK기업영업2팀</td>
+    <td class="num">11</td><td class="num">11,964</td>
+    <td class="num">1,088</td>
+    <td class="num" style="background:#FFFADC;">7,531</td>
+    <td class="num">4,433</td>
+    <td class="num" style="background:#EBF7EE;">1,605</td>
+    <td class="num" style="background:#FDECEA;">2,828</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">36.2%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>KA영업팀</td>
+    <td class="num">11</td><td class="num">2,846</td>
+    <td class="num">259</td>
+    <td class="num" style="background:#FFFADC;">276</td>
+    <td class="num">2,570</td>
+    <td class="num" style="background:#EBF7EE;">1,302</td>
+    <td class="num" style="background:#FDECEA;">1,268</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">50.7%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(JK)</td>
+    <td class="num">10</td><td class="num">994</td>
+    <td class="num">99</td>
+    <td class="num" style="background:#FFFADC;">52</td>
+    <td class="num">942</td>
+    <td class="num" style="background:#EBF7EE;">66</td>
+    <td class="num" style="background:#FDECEA;">876</td>
+    <td class="num" style="background:#FDECEA;font-weight:700;">7.0%</td>
+    <td class="center"><span class="badge badge-warn">미흡</span></td>
+  </tr>
+  <tr>
+    <td class="site-label site-am" rowspan="2">AM</td>
+    <td>AM기업영업팀</td>
+    <td class="num">10</td><td class="num">23,419</td>
+    <td class="num">2,342</td>
+    <td class="num" style="background:#FFFADC;">3,753</td>
+    <td class="num">19,666</td>
+    <td class="num" style="background:#EBF7EE;">7,216</td>
+    <td class="num" style="background:#FDECEA;">12,450</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">36.7%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(AM)</td>
+    <td class="num">10</td><td class="num">1,337</td>
+    <td class="num">134</td>
+    <td class="num" style="background:#FFFADC;">424</td>
+    <td class="num">913</td>
+    <td class="num" style="background:#EBF7EE;">315</td>
+    <td class="num" style="background:#FDECEA;">598</td>
+    <td class="num" style="background:#FFFADC;font-weight:600;">34.5%</td>
+    <td class="center"><span class="badge badge-warn">주의</span></td>
+  </tr>
+  <tr class="total-row">
+    <td class="total-label" colspan="2">합계</td>
+    <td class="num">65</td><td class="num">52,248</td>
+    <td class="num">804</td>
+    <td class="num" style="background:#FFFADC;">17,481</td>
+    <td class="num">34,767</td>
+    <td class="num" style="background:#EBF7EE;">11,941</td>
+    <td class="num" style="background:#FDECEA;">22,826</td>
+    <td class="num">34.3%</td>
+    <td class="center">—</td>
+  </tr>
+  <tr class="note-row">
+    <td colspan="11">※ 분석 기간: 2026-02 ~ 2026-03 (2개월) &nbsp;|&nbsp; 신규할당: 할당일시 ≥ 2026-02-01 (분석기간 중·후 할당 → 공정비교 위해 분모에서 제외) &nbsp;|&nbsp; 유효 ACNT = 총 ACNT − 신규할당 &nbsp;|&nbsp; 접촉률 = 접촉있음 / 유효 ACNT &nbsp;|&nbsp; 판정: ≥ 40% 양호 / 20~40% 주의 / 20% 미만 미흡</td>
+  </tr>
+</tbody>
+</table></div>
+
+<div class="chart-area">
+  <div class="chart-grid-2x2">
+    <!-- JK 최근 2개월 접촉률 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 최근 2개월 접촉률 JK (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2b_recent_jk"></canvas></div>
+    </div>
+    <!-- AM 최근 2개월 접촉률 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 최근 2개월 접촉률 AM (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container" style="max-height:300px;"><canvas id="chart_s2b_recent_am"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 3: E+S(E) 분석                                -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-3">
+<h2 class="section-header">■ 부서별 E+S(E) 70% 이상 ACNT</h2>
+<div class="table-wrapper"><table>
+<thead>
+  <tr class="hd-top">
+    <th>사이트</th>
+    <th>부서</th>
+    <th>인원</th>
+    <th>총 ACNT</th>
+    <th>매출발생 ACNT</th>
+    <th>E+S(E) 70%↑ 개수</th>
+    <th>비율</th>
+    <th>전체 평균 대비</th>
+    <th>판정</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="site-label site-jk" rowspan="4">JK</td>
+    <td>JK기업영업1팀</td>
+    <td class="num">12</td><td class="num">11,688</td>
+    <td class="num">4,115</td>
+    <td class="num">659</td>
+    <td class="num" style="background:#EBF7EE;">5.6%</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">-11.9%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>JK기업영업2팀</td>
+    <td class="num">11</td><td class="num">11,964</td>
+    <td class="num">3,983</td>
+    <td class="num">411</td>
+    <td class="num" style="background:#EBF7EE;">3.4%</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">-14.1%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>KA영업팀</td>
+    <td class="num">11</td><td class="num">2,846</td>
+    <td class="num">1,115</td>
+    <td class="num">157</td>
+    <td class="num" style="background:#EBF7EE;">5.5%</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">-12.0%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(JK)</td>
+    <td class="num">10</td><td class="num">994</td>
+    <td class="num">221</td>
+    <td class="num">42</td>
+    <td class="num" style="background:#EBF7EE;">4.2%</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">-13.3%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr>
+    <td class="site-label site-am" rowspan="2">AM</td>
+    <td>AM기업영업팀</td>
+    <td class="num">10</td><td class="num">23,419</td>
+    <td class="num">13,822</td>
+    <td class="num">7,748</td>
+    <td class="num" style="background:#FDECEA;font-weight:700;">33.1%</td>
+    <td class="num" style="background:#FDECEA;font-weight:700;">+15.6%</td>
+    <td class="center"><span class="badge badge-warn">개선 필요</span></td>
+  </tr>
+  <tr>
+    <td>AM엔터프라이즈영업팀(AM)</td>
+    <td class="num">10</td><td class="num">1,337</td>
+    <td class="num">600</td>
+    <td class="num">121</td>
+    <td class="num" style="background:#EBF7EE;">9.1%</td>
+    <td class="num" style="background:#EBF7EE;font-weight:600;">-8.4%</td>
+    <td class="center"><span class="badge badge-ok">양호</span></td>
+  </tr>
+  <tr class="total-row">
+    <td class="total-label" colspan="2">합계 <span style="font-weight:500;opacity:0.85;font-size:0.78rem;">(비율만 평균)</span></td>
+    <td class="num">72</td><td class="num">52,248</td>
+    <td class="num">23,856</td>
+    <td class="num">9,138</td>
+    <td class="num">17.5% <span style="font-size:0.7rem;font-weight:500;opacity:0.75;">평균</span></td>
+    <td class="center">기준</td>
+    <td class="center">—</td>
+  </tr>
+  <tr class="note-row">
+    <td colspan="9">※ 판정 기준: 전체 평균 대비 ×1.5↑ = 개선 필요 (빨강) / ×1.2~1.5 = 주의 / ×0.9~1.2 = 보통 / ×0.9↓ = 양호 &nbsp;|&nbsp; 매출발생 ACNT: 할당일시 이후 매출 기록이 존재하는 ACNT &nbsp;|&nbsp; 비율 = E+S(E) 70%↑ / 총 ACNT</td>
+  </tr>
+</tbody>
+</table></div>
+
+<div class="chart-area">
+  <div class="chart-grid-2x2">
+    <!-- JK E+S(E) 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 E+S(E) 70%↑ 비율 JK (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container" style="max-height:280px;"><canvas id="chart_s3_ese_jk"></canvas></div>
+    </div>
+    <!-- AM E+S(E) 차트 -->
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 E+S(E) 70%↑ 비율 AM (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container" style="max-height:280px;"><canvas id="chart_s3_ese_am"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 사이트별 평균 기준 비교 차트 (참고) -->
+<div class="chart-area" style="border-top: 1px solid var(--border);">
+  <div class="chart-title" style="margin-bottom: 0.9rem;">▸ 사이트별 평균 기준 비교 (참고) &nbsp;<span style="font-size:0.78rem;color:var(--text-muted);font-weight:500;font-style:italic;">JK 평균 4.6% (1,269 / 27,492) &nbsp;|&nbsp; AM 평균 31.8% (7,869 / 24,756)</span></div>
+  <div class="chart-grid-2x2">
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 비율 vs JK 평균 (%)
+        <span class="site-badge">JK</span>
+      </div>
+      <div class="chart-container" style="max-height:280px;"><canvas id="chart_s3_ese_jk_siteavg"></canvas></div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        부서별 비율 vs AM 평균 (%)
+        <span class="site-badge am">AM</span>
+      </div>
+      <div class="chart-container" style="max-height:280px;"><canvas id="chart_s3_ese_am_siteavg"></canvas></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- 섹션 4: 주요 인사이트                               -->
+<!-- ══════════════════════════════════════════════════ -->
+<section id="section-4">
+<h2 class="section-header">■ 주요 인사이트</h2>
+<div class="insight-grid">
+  <div class="insight-card card-warning">
+    <div class="insight-icon">▲ 1</div>
+    <div class="insight-body">
+      <div class="insight-title">E+S(E) 비율 최고: AM기업영업팀 (33.1%)</div>
+      <div class="insight-desc">E+S(E) 비율이 전체 평균(17.5%) 대비 1.9배 수준으로 높음.</div>
+    </div>
+  </div>
+  <div class="insight-card card-good">
+    <div class="insight-icon">● 2</div>
+    <div class="insight-body">
+      <div class="insight-title">E+S(E) 비율 최저: JK기업영업2팀 (3.4%)</div>
+      <div class="insight-desc">영업자 접촉 활동이 상대적으로 활발하게 반영되고 있는 팀.</div>
+    </div>
+  </div>
+  <div class="insight-card card-warning">
+    <div class="insight-icon">▲ 3</div>
+    <div class="insight-body">
+      <div class="insight-title">접촉 미흡 비율 최고: AM엔터프라이즈영업팀(JK) (61.2%)</div>
+      <div class="insight-desc">2안 기준 미흡(1~3회) 비율이 61.2%로, 전체 평균(16.4%) 대비 현저히 높음.</div>
+    </div>
+  </div>
+  <div class="insight-card card-good">
+    <div class="insight-icon">● 4</div>
+    <div class="insight-body">
+      <div class="insight-title">S+A 우수 등급 집중: AM엔터프라이즈영업팀(AM) (S+A 24.2%)</div>
+      <div class="insight-desc">전체 평균(4.8%) 대비 5배 수준으로 고가치 ACNT 비중이 가장 높음. 엔터프라이즈 영업 강점 보유.</div>
+    </div>
+  </div>
+</div>
+</section>
+</main>
+
+<script>
+// ── 컬러 팔레트 상수 ──
+const NAVY = {
+  s900: '#0F2144', s700: '#1F3864', s500: '#2E5AAC', s400: '#4472C4',
+  s200: '#A9BEE8', s100: '#D6E3F7', s050: '#EEF3FB'
+};
+
+// ── 섹션 1 데이터 ── (AM엔터프라이즈 수치만 별도 추출 버전 적용, 쿠팡 제외)
+// AM엔터(JK): 버전B 잡코리아기준 — 그룹 1,794 / 사업자번호 857 / 매출 40.0억
+// AM엔터(AM): 버전A 알바몬기준 — 그룹 1,439 / 사업자번호 1,769 / 매출 255.5억
+//   ※ 총 ACNT 위치에 그룹번호 수, 사업자번호 위치에 유니크 사업자번호 수 표기
+
+// JK 사이트: JK기업영업1팀, JK기업영업2팀, KA영업팀, AM엔터프라이즈영업팀(JK)
+const jkLabels   = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+const jkAcnt     = [11688, 11964, 2846, 1794];
+const jkBiz      = [11739, 11438, 2785, 857];
+const jkGradeS   = [1.5, 1.2, 7.3, 12.1];
+const jkGradeA   = [4.9, 5.1, 13.8, 5.3];
+const jkGradeB   = [11.7, 10.9, 9.4, 5.8];
+const jkGradeC   = [14.4, 14.2, 23.6, 6.1];
+const jkGradeD   = [33.1, 29.7, 28.2, 8.3];
+
+// AM 사이트: AM기업영업팀, AM엔터프라이즈영업팀(AM)
+const amLabels   = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+const amAcnt     = [23419, 1439];
+const amBiz      = [23508, 1769];
+const amGradeS   = [0.6, 16.6];
+const amGradeA   = [3.6, 7.5];
+const amGradeB   = [15.7, 6.6];
+const amGradeC   = [35.3, 11.4];
+const amGradeD   = [10.7, 12.2];
+
+// ── 공통 옵션 팩토리 ──
+function baseOpts(yCallback) {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 14 } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 }, maxRotation: 30 } },
+      y: { beginAtZero: true, ticks: { font: { size: 10 }, callback: yCallback } }
+    }
+  };
+}
+
+// 네이비 톤인톤 단계 색상 (막대용)
+const navyBars   = ['rgba(31,56,100,0.82)', 'rgba(46,90,172,0.78)', 'rgba(68,114,196,0.75)', 'rgba(169,190,232,0.8)', 'rgba(214,227,247,0.85)'];
+const accentLine = '#E67E22'; // 앰버 포인트 (사업자번호 개수 라인)
+
+// ── 차트: JK 총ACNT/사업자번호 개수 ──
+new Chart(document.getElementById('chart_jk_acnt'), {
+  type: 'bar',
+  data: {
+    labels: jkLabels,
+    datasets: [
+      {
+        type: 'bar', label: '총 ACNT',
+        data: jkAcnt,
+        backgroundColor: NAVY.s500 + 'CC',
+        borderColor: NAVY.s500, borderWidth: 1, yAxisID: 'y'
+      },
+      {
+        type: 'line', label: '사업자번호 개수',
+        data: jkBiz,
+        borderColor: accentLine, backgroundColor: 'rgba(230,126,34,0.1)',
+        tension: 0.3, pointRadius: 5, borderWidth: 2, yAxisID: 'y'
+      }
+    ]
+  },
+  options: { ...baseOpts(v => v.toLocaleString()) }
+});
+
+// ── 차트: JK 등급별 비율 ──
+// 단일 톤인톤 5단계 색상
+const gradeColors = [NAVY.s900, NAVY.s700, NAVY.s500, NAVY.s400, NAVY.s200];
+new Chart(document.getElementById('chart_jk_grade'), {
+  type: 'bar',
+  data: {
+    labels: jkLabels,
+    datasets: [
+      { label: 'S (%)', data: jkGradeS, backgroundColor: gradeColors[0] + 'D0', borderColor: gradeColors[0], borderWidth: 1 },
+      { label: 'A (%)', data: jkGradeA, backgroundColor: gradeColors[1] + 'CC', borderColor: gradeColors[1], borderWidth: 1 },
+      { label: 'B (%)', data: jkGradeB, backgroundColor: gradeColors[2] + 'CC', borderColor: gradeColors[2], borderWidth: 1 },
+      { label: 'C (%)', data: jkGradeC, backgroundColor: gradeColors[3] + 'CC', borderColor: gradeColors[3], borderWidth: 1 },
+      { label: 'D (%)', data: jkGradeD, backgroundColor: gradeColors[4] + 'CC', borderColor: gradeColors[4], borderWidth: 1 },
+    ]
+  },
+  options: {
+    ...baseOpts(v => v + '%'),
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 10 }, maxRotation: 30 } },
+      y: { stacked: true, beginAtZero: true, ticks: { font: { size: 10 }, callback: v => v + '%' } }
+    }
+  }
+});
+
+// ── 차트: AM 총ACNT/사업자번호 개수 ──
+new Chart(document.getElementById('chart_am_acnt'), {
+  type: 'bar',
+  data: {
+    labels: amLabels,
+    datasets: [
+      {
+        type: 'bar', label: '총 ACNT',
+        data: amAcnt,
+        backgroundColor: NAVY.s400 + 'CC',
+        borderColor: NAVY.s400, borderWidth: 1, yAxisID: 'y'
+      },
+      {
+        type: 'line', label: '사업자번호 개수',
+        data: amBiz,
+        borderColor: accentLine, backgroundColor: 'rgba(230,126,34,0.1)',
+        tension: 0.3, pointRadius: 6, borderWidth: 2, yAxisID: 'y'
+      }
+    ]
+  },
+  options: { ...baseOpts(v => v.toLocaleString()) }
+});
+
+// ── 차트: AM 등급별 비율 ──
+new Chart(document.getElementById('chart_am_grade'), {
+  type: 'bar',
+  data: {
+    labels: amLabels,
+    datasets: [
+      { label: 'S (%)', data: amGradeS, backgroundColor: gradeColors[0] + 'D0', borderColor: gradeColors[0], borderWidth: 1 },
+      { label: 'A (%)', data: amGradeA, backgroundColor: gradeColors[1] + 'CC', borderColor: gradeColors[1], borderWidth: 1 },
+      { label: 'B (%)', data: amGradeB, backgroundColor: gradeColors[2] + 'CC', borderColor: gradeColors[2], borderWidth: 1 },
+      { label: 'C (%)', data: amGradeC, backgroundColor: gradeColors[3] + 'CC', borderColor: gradeColors[3], borderWidth: 1 },
+      { label: 'D (%)', data: amGradeD, backgroundColor: gradeColors[4] + 'CC', borderColor: gradeColors[4], borderWidth: 1 },
+    ]
+  },
+  options: {
+    ...baseOpts(v => v + '%'),
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 10 }, maxRotation: 30 } },
+      y: { stacked: true, beginAtZero: true, ticks: { font: { size: 10 }, callback: v => v + '%' } }
+    }
+  }
+});
+
+// ── 차트: 접촉 상태 비율 — JK/AM 분리 ──
+// JK: JK기업영업1팀, JK기업영업2팀, KA영업팀, AM엔터프라이즈영업팀(JK), Scaling팀
+// Scaling팀은 접촉 데이터 미반영이므로 제외
+const contactJkLabels = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+const contactJkGood   = [24.1, 34.5, 28.5, 15.3];
+const contactJkNorm   = [33.4, 40.4, 40.7, 23.5];
+const contactJkBad    = [42.5, 25.1, 30.8, 61.2];
+
+// AM: AM기업영업팀, AM엔터프라이즈영업팀(AM)
+const contactAmLabels = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+const contactAmGood   = [16.2, 68.5];
+const contactAmNorm   = [52.0, 16.6];
+const contactAmBad    = [31.9, 14.9];
+
+const contactStackOpts = {
+  ...baseOpts(v => v + '%'),
+  scales: {
+    x: { stacked: true, ticks: { font: { size: 10 }, maxRotation: 30 } },
+    y: { stacked: true, beginAtZero: true, max: 100, ticks: { font: { size: 10 }, callback: v => v + '%' } }
+  }
+};
+
+new Chart(document.getElementById('chart_s2_contact_jk'), {
+  type: 'bar',
+  data: {
+    labels: contactJkLabels,
+    datasets: [
+      { label: '양호(12회↑) %', data: contactJkGood, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+      { label: '보통(4~11회) %', data: contactJkNorm, backgroundColor: 'rgba(123,88,0,0.65)', borderColor: '#7B5800', borderWidth: 1 },
+      { label: '미흡(1~3회) %', data: contactJkBad,  backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+    ]
+  },
+  options: contactStackOpts
+});
+
+new Chart(document.getElementById('chart_s2_contact_am'), {
+  type: 'bar',
+  data: {
+    labels: contactAmLabels,
+    datasets: [
+      { label: '양호(12회↑) %', data: contactAmGood, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+      { label: '보통(4~11회) %', data: contactAmNorm, backgroundColor: 'rgba(123,88,0,0.65)', borderColor: '#7B5800', borderWidth: 1 },
+      { label: '미흡(1~3회) %', data: contactAmBad,  backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+    ]
+  },
+  options: contactStackOpts
+});
+
+// ── 차트: 최근 2개월 접촉률 — JK/AM 분리 (할당월 이후 접촉 기준) ──
+(function() {
+  const recentJkLabels    = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+  const recentJkContacted = [23.0, 36.2, 50.7,  7.0];
+  const recentJkNoContact = [77.0, 63.8, 49.3, 93.0];
+
+  const recentAmLabels    = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+  const recentAmContacted = [36.7, 34.5];
+  const recentAmNoContact = [63.3, 65.5];
+
+  const recentStackOpts = {
+    ...baseOpts(v => v + '%'),
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 10 }, maxRotation: 30 } },
+      y: { stacked: true, beginAtZero: true, max: 100, ticks: { font: { size: 10 }, callback: v => v + '%' } }
+    }
+  };
+
+  new Chart(document.getElementById('chart_s2b_recent_jk'), {
+    type: 'bar',
+    data: {
+      labels: recentJkLabels,
+      datasets: [
+        { label: '접촉있음 %', data: recentJkContacted, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+        { label: '접촉없음 %', data: recentJkNoContact, backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+      ]
+    },
+    options: recentStackOpts
+  });
+
+  new Chart(document.getElementById('chart_s2b_recent_am'), {
+    type: 'bar',
+    data: {
+      labels: recentAmLabels,
+      datasets: [
+        { label: '접촉있음 %', data: recentAmContacted, backgroundColor: 'rgba(27,107,53,0.75)', borderColor: '#1B6B35', borderWidth: 1 },
+        { label: '접촉없음 %', data: recentAmNoContact, backgroundColor: 'rgba(139,32,32,0.7)',  borderColor: '#8B2020', borderWidth: 1 }
+      ]
+    },
+    options: recentStackOpts
+  });
+})();
+
+// ── 차트: E+S(E) 비율 — JK/AM 분리 ──
+(function() {
+  const avg = 17.5;
+
+  // JK: JK기업영업1팀, JK기업영업2팀, KA영업팀, AM엔터프라이즈영업팀(JK)
+  const eseJkLabels = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+  const eseJkRatios = [5.6, 3.4, 5.5, 4.2];
+
+  // AM: AM기업영업팀, AM엔터프라이즈영업팀(AM)
+  const eseAmLabels = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+  const eseAmRatios = [33.1, 9.1];
+
+  function makeEseDatasets(labels, ratios) {
+    return [
+      {
+        type: 'bar',
+        label: 'E+S(E) 70%↑ 비율 (%)',
+        data: ratios,
+        backgroundColor: ratios.map(v => v > avg * 1.5 ? 'rgba(139,32,32,0.8)' : v > avg ? 'rgba(230,126,34,0.75)' : 'rgba(27,107,53,0.7)'),
+        borderColor: ratios.map(v => v > avg * 1.5 ? '#8B2020' : v > avg ? '#E67E22' : '#1B6B35'),
+        borderWidth: 1.5
+      },
+      {
+        type: 'line',
+        label: `전체 평균 (${avg}%)`,
+        data: labels.map(() => avg),
+        borderColor: NAVY.s400,
+        borderDash: [5, 4],
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false
+      }
+    ];
+  }
+
+  new Chart(document.getElementById('chart_s3_ese_jk'), {
+    type: 'bar',
+    data: { labels: eseJkLabels, datasets: makeEseDatasets(eseJkLabels, eseJkRatios) },
+    options: { ...baseOpts(v => v + '%') }
+  });
+
+  new Chart(document.getElementById('chart_s3_ese_am'), {
+    type: 'bar',
+    data: { labels: eseAmLabels, datasets: makeEseDatasets(eseAmLabels, eseAmRatios) },
+    options: { ...baseOpts(v => v + '%') }
+  });
+})();
+
+// ── 차트: 사이트별 평균 기준 E+S(E) 비교 ──
+(function() {
+  const jkAvg = 4.6;
+  const amAvg = 31.8;
+
+  const eseJkLabels = ['JK기업영업1팀', 'JK기업영업2팀', 'KA영업팀', 'AM엔터프라이즈(JK)'];
+  const eseJkRatios = [5.6, 3.4, 5.5, 4.2];
+
+  const eseAmLabels = ['AM기업영업팀', 'AM엔터프라이즈(AM)'];
+  const eseAmRatios = [33.1, 9.1];
+
+  function makeSiteAvgDatasets(labels, ratios, avg, avgLabel) {
+    return [
+      {
+        type: 'bar',
+        label: 'E+S(E) 70%↑ 비율 (%)',
+        data: ratios,
+        backgroundColor: ratios.map(v => v > avg * 1.5 ? 'rgba(139,32,32,0.8)' : v > avg * 1.2 ? 'rgba(230,126,34,0.75)' : v > avg * 0.9 ? 'rgba(214,168,89,0.72)' : 'rgba(27,107,53,0.7)'),
+        borderColor: ratios.map(v => v > avg * 1.5 ? '#8B2020' : v > avg * 1.2 ? '#E67E22' : v > avg * 0.9 ? '#C08F3D' : '#1B6B35'),
+        borderWidth: 1.5
+      },
+      {
+        type: 'line',
+        label: `${avgLabel} (${avg}%)`,
+        data: labels.map(() => avg),
+        borderColor: NAVY.s400,
+        borderDash: [5, 4],
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false
+      }
+    ];
+  }
+
+  new Chart(document.getElementById('chart_s3_ese_jk_siteavg'), {
+    type: 'bar',
+    data: { labels: eseJkLabels, datasets: makeSiteAvgDatasets(eseJkLabels, eseJkRatios, jkAvg, 'JK 평균') },
+    options: { ...baseOpts(v => v + '%') }
+  });
+
+  new Chart(document.getElementById('chart_s3_ese_am_siteavg'), {
+    type: 'bar',
+    data: { labels: eseAmLabels, datasets: makeSiteAvgDatasets(eseAmLabels, eseAmRatios, amAvg, 'AM 평균') },
+    options: { ...baseOpts(v => v + '%') }
+  });
+})();
+
+// ── 섹션 1: 등급별 그룹 최대값 하이라이트 ──
+// 합계 행(tr.total-row) 제외, 각 행의 개수/비율/매출 그룹 중 최대값 1셀에 grade-top 클래스 부여
+// 음수 포함 max: 양수가 있으면 최대 양수, 양수 없으면 음수 중 가장 큰 값
+(function() {
+  const tableBody = document.querySelector('#section-1 table tbody');
+  if (!tableBody) return;
+  tableBody.querySelectorAll('tr:not(.total-row)').forEach(function(row) {
+    ['grade-count', 'grade-ratio', 'grade-revenue'].forEach(function(cls) {
+      var cells = row.querySelectorAll('td.' + cls);
+      if (!cells.length) return;
+      var maxVal = -Infinity, maxCell = null;
+      cells.forEach(function(td) {
+        // 콤마, %, 공백 제거 후 숫자 파싱
+        var v = parseFloat(td.textContent.replace(/[,%\s]/g, ''));
+        if (!isNaN(v) && v > maxVal) { maxVal = v; maxCell = td; }
+      });
+      if (maxCell) maxCell.classList.add('grade-top');
+    });
+  });
+})();
+</script>
+</body>
+</html>
