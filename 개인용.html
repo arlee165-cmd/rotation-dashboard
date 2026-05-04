@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>이아람 · Portfolio v4</title>
+<title>이아람 · Portfolio (Masked)</title>
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
@@ -45,6 +45,23 @@
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s, color 0.3s;
+  }
+
+  /* ========== MASK BANNER ========== */
+  .mask-banner {
+    background: #fff7ed;
+    border-bottom: 1px solid #fed7aa;
+    color: #9a3412;
+    font-size: 12px;
+    text-align: center;
+    padding: 8px 16px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .mask-banner {
+    background: #1c1917;
+    border-bottom-color: #44403c;
+    color: #fdba74;
   }
 
   /* ========== NAV ========== */
@@ -197,7 +214,7 @@
     color: var(--ink-soft);
     font-size: 16px;
     max-width: 700px;
-    margin-bottom: 48px;
+    margin-bottom: 24px;
   }
 
   /* ========== ABOUT ========== */
@@ -318,15 +335,22 @@
     border-color: var(--accent);
   }
   .kpi-card.highlight { border-color: var(--accent); background: var(--accent-soft); }
-  .kpi-value {
-    font-size: 30px;
-    font-weight: 800;
-    color: var(--accent);
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+  .kpi-label {
+    font-size: 20px;
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    margin-bottom: 14px;
   }
-  .kpi-value-sub { font-size: 18px; }
-  .kpi-label { font-size: 14px; color: var(--ink); margin-top: 10px; font-weight: 600; }
+  .kpi-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .kpi-value-sub { font-size: 13px; }
   .kpi-detail { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
   /* ========== PROJECTS ========== */
@@ -429,24 +453,6 @@
   .impact li::before { content: "•"; color: var(--accent); position: absolute; left: 2px; font-weight: 700; }
   .impact b { color: var(--accent); font-weight: 700; }
   .impact p { font-size: 13px; line-height: 1.6; }
-  .impact table.mini { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
-  .impact table.mini th, .impact table.mini td {
-    padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--line);
-  }
-  .impact table.mini th:first-child, .impact table.mini td:first-child { text-align: left; }
-  .impact table.mini thead th {
-    font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--line);
-  }
-  .impact table.mini tfoot td {
-    font-weight: 700; color: var(--accent); border-top: 2px solid var(--accent);
-    border-bottom: none;
-  }
-
-  .placeholder .impact { background: transparent; border-left-color: var(--line); }
-  .placeholder .impact-label { color: var(--muted); }
-  .placeholder .impact p { color: var(--muted); font-style: italic; }
-  .placeholder .description { color: var(--muted); font-style: italic; }
   .featured .impact { background: rgba(29, 78, 216, 0.08); }
 
   /* ========== SKILLS ========== */
@@ -482,12 +488,6 @@
   }
   .contact-card h3 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 14px; }
   .contact-card .lede { color: var(--ink-soft); margin-bottom: 28px; font-size: 15px; }
-  .contact-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); opacity: 0.95; }
-  .btn-secondary { background: transparent; border: 1px solid var(--line); color: var(--ink); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
   footer {
     text-align: center;
@@ -516,7 +516,7 @@
 
   /* ========== PRINT ========== */
   @media print {
-    nav.top, .scroll-indicator, .theme-toggle, .contact-buttons { display: none !important; }
+    nav.top, .scroll-indicator, .theme-toggle, .mask-banner { display: none !important; }
     body { background: white !important; color: black !important; font-size: 10.5pt; }
     .hero { min-height: auto; padding: 24px 0; }
     section.content { padding: 28px 0; page-break-inside: avoid; max-width: none; }
@@ -537,6 +537,9 @@
 </head>
 <body>
 
+<!-- ============ MASK BANNER ============ -->
+<div class="mask-banner">MASKED VERSION · 회사명·서비스명·내부 시스템명은 익명화됨 (수치·스택은 원본 유지)</div>
+
 <!-- ============ NAV ============ -->
 <nav class="top">
   <div class="nav-inner">
@@ -547,7 +550,6 @@
       <li><a href="#impact">Impact</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contact</a></li>
     </ul>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="다크모드 전환" title="다크모드 전환">
       <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -563,18 +565,18 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero">
-  <div class="hero-tag">PORTFOLIO · 2026 · v4</div>
+  <div class="hero-tag">PORTFOLIO · 2026 · MASKED</div>
   <h1 class="hero-title">
     공고 운영에서 <span class="highlight">정책 자동화</span>까지<br>
     경계를 넘어 만든 성과.
   </h1>
   <p class="hero-subtitle">
-    잡코리아 이아람 · 입사 24.06, 1년 10개월차. 영업운영팀에서 공고 운영 1,752건과 Octoparse 기반 '앗뜨공' 서비스 데이터를 만들었고,
-    25.08부터 성과관리팀에서 ACNT 정책·운영·자동화를 담당합니다.
+    이아람 · 입사 24.06, 1년 10개월차. 영업운영 조직에서 공고 운영 1,752건과 Octoparse 기반 사내 신규 채용 정보 서비스 데이터를 만들었고,
+    25.08부터 성과관리 조직에서 ACNT 정책·운영·자동화를 담당합니다.
   </p>
   <div class="hero-meta">
-    <div class="hero-meta-item"><b>현 소속</b>사업추진본부 성과지원실 성과관리팀</div>
-    <div class="hero-meta-item"><b>대표 성과</b>JK↔OP 오차율 313%→1% · 자동화 에이전트 v2.6</div>
+    <div class="hero-meta-item"><b>현 소속</b>성과관리 조직 (구인구직 플랫폼)</div>
+    <div class="hero-meta-item"><b>대표 성과</b>사이트 J↔O ACNT 오차율 313%→1% · 자동화 에이전트 v2.6</div>
     <div class="hero-meta-item"><b>스택</b>SQL/Athena · 태블로 · 노션 · Claude Code Skill</div>
   </div>
   <div class="scroll-indicator">SCROLL ↓</div>
@@ -589,8 +591,8 @@
   </div>
   <div class="about-grid reveal">
     <div class="about-text">
-      <p><b>영업운영팀(2024.06~2025.07)</b>에서 공고 HTML 운영을 단일 창구로 맡아 4개월간 <b>1,752건</b>을 처리했고(팀 6인 중 1위·평균 대비 +74%), <b>"업무를 더 배우고 싶다"</b>는 제안으로 받은 신규 크롤링 업무가 잡코리아 <b>'앗뜨공' 서비스 데이터 기여</b>로 이어졌습니다.</p>
-      <p><b>성과관리팀(2025.08~)</b>에서는 ACNT 정책 설계·운영을 담당하며 <b>JK↔OP 오차율 313%→1%</b> 같은 장기 과제를 분기 마일스톤으로 정량화했고, 최근에는 <b>조율 의사결정 자동화 에이전트(Claude Code Skill v2.6, 9차 개선) 단독 구축</b>으로 정책 룰을 코드화해 판정 편차를 제거했습니다.</p>
+      <p><b>영업운영 조직(2024.06~2025.07)</b>에서 공고 HTML 운영을 단일 창구로 맡아<br>4개월간 <b>1,752건</b>을 처리했고(팀 6인 중 1위·평균의 1.74배),<br><b>"업무를 더 배우고 싶다"</b>는 제안으로 받은 신규 크롤링 업무가<br>사내 <b>신규 채용 정보 서비스 데이터 기여</b>로 이어졌습니다.</p>
+      <p><b>성과관리 조직(2025.08~)</b>에서는 ACNT 정책 설계·운영을 담당하며<br><b>사이트 J↔O ACNT 오차율 313%→1%</b> 같은 장기 과제를 분기 마일스톤으로 정량화했고,<br>최근에는 <b>조율 의사결정 자동화 에이전트(Claude Code Skill v2.6, 9차 개선) 단독 구축</b>으로<br>정책 룰을 코드화해 판정 편차를 제거했습니다.</p>
     </div>
     <div>
       <div class="keywords">
@@ -618,11 +620,11 @@
   <div class="timeline reveal">
     <div class="timeline-card">
       <div class="timeline-period">2024.06 ~ 2025.07 · 14개월</div>
-      <div class="timeline-team">플랫폼영업본부 영업운영팀</div>
-      <div class="timeline-role">공고지원파트</div>
+      <div class="timeline-team">영업운영 조직</div>
+      <div class="timeline-role">공고지원 직무</div>
       <ul class="timeline-bullets">
-        <li>공고 HTML 운영 — <b>4개월 1,752건</b> (팀 1위, 평균 +74%)</li>
-        <li><b>Octoparse 크롤링 → '앗뜨공' 서비스 기여</b></li>
+        <li>공고 HTML 운영 — <b>4개월 1,752건</b> (팀 1위, 평균의 1.74배)</li>
+        <li><b>Octoparse 크롤링 → 사내 신규 서비스 기여</b></li>
       </ul>
     </div>
     <div class="timeline-arrow">
@@ -631,10 +633,10 @@
     </div>
     <div class="timeline-card current">
       <div class="timeline-period">2025.08 ~ 현재 · 9개월차</div>
-      <div class="timeline-team">사업추진본부 성과지원실 성과관리팀</div>
+      <div class="timeline-team">성과관리 조직</div>
       <div class="timeline-role">ACNT 순환정책 / 영업 성과관리</div>
       <ul class="timeline-bullets">
-        <li>JK ↔ OP ACNT 일원화 — <b>오차율 313% → 1%</b></li>
+        <li>사이트 J ↔ O ACNT 일원화 — <b>오차율 313% → 1%</b></li>
         <li><b>조율 자동화 에이전트(v2.6) 단독 구축</b> — 정책 룰 코드화</li>
       </ul>
     </div>
@@ -646,27 +648,26 @@
   <div class="reveal">
     <div class="section-tag">IMPACT</div>
     <h2 class="section-title">핵심 성과</h2>
-    <p class="section-lede">정량으로 검증된 4개 지표.</p>
   </div>
   <div class="kpi-grid reveal">
     <div class="kpi-card highlight">
+      <div class="kpi-label">사이트 J ↔ O ACNT 오차율</div>
       <div class="kpi-value">313% → 1%</div>
-      <div class="kpi-label">JK ↔ OP ACNT 오차율</div>
       <div class="kpi-detail">'25.08 → '26.04 · 5월 0% 수렴 예정</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-value">1,752건<br><span class="kpi-value-sub">/ 4개월</span></div>
-      <div class="kpi-label">공고지원 처리 (영업운영팀)</div>
-      <div class="kpi-detail">팀 6인 중 1위 · 평균 대비 +74%</div>
+      <div class="kpi-label">공고지원 처리 (영업운영 조직)</div>
+      <div class="kpi-value">1,752건 <span class="kpi-value-sub">/ 4개월</span></div>
+      <div class="kpi-detail">팀 6인 중 1위 · 평균의 1.74배</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-value">v2.6<br><span class="kpi-value-sub">9차 개선</span></div>
-      <div class="kpi-label">조율 자동화 에이전트 (단독 PM)</div>
+      <div class="kpi-label">조율 자동화 에이전트<br>(단독 PM)</div>
+      <div class="kpi-value">v2.6 <span class="kpi-value-sub">· 9차 개선</span></div>
       <div class="kpi-detail">정책 룰 코드화 · BI 5개 통합 · 분 단위 처리</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-value">2,747 ↔ 16,623<br><span class="kpi-value-sub">→ 동일</span></div>
-      <div class="kpi-label">KA영업팀 JK / OP 격차 해소</div>
+      <div class="kpi-label">Key Account 영업팀<br>사이트 J / O 격차 해소</div>
+      <div class="kpi-value">2,747 ↔ 16,623 <span class="kpi-value-sub">→ 동일</span></div>
       <div class="kpi-detail">최대 격차 부서 단일 사이클로 정리</div>
     </div>
   </div>
@@ -677,12 +678,11 @@
   <div class="reveal">
     <div class="section-tag">PROJECTS</div>
     <h2 class="section-title">프로젝트</h2>
-    <p class="section-lede">대표 9건 + 정형 운영 5건. ★는 단독 주도 핵심 성과.</p>
   </div>
 
-  <!-- ★ 영업운영팀 시기 -->
+  <!-- ★ 영업운영 조직 시기 -->
   <div class="project-era reveal">
-    <h3>플랫폼영업본부 영업운영팀</h3>
+    <h3>영업운영 조직</h3>
     <span class="era-period">2024.06 ~ 2025.07</span>
     <span class="era-count">2 PROJECTS</span>
   </div>
@@ -693,7 +693,7 @@
       <div class="project-num">PROJECT 01</div>
       <h3 class="project-title">공고지원 워크플로 운영</h3>
       <p class="period">2024.06 ~ 2025.07 · 슬랙 워크플로 실측 '25.04~07</p>
-      <div class="tags"><span class="tag">HTML</span><span class="tag">잡코리아·알바몬 관리자</span><span class="tag">마그마</span><span class="tag">슬랙 워크플로</span></div>
+      <div class="tags"><span class="tag">HTML</span><span class="tag">양 플랫폼 관리자</span><span class="tag">사내 운영 어드민</span><span class="tag">슬랙 워크플로</span></div>
       <p class="description">
         기업 채용 공고 HTML 수정·생성·상품적용을 단일 창구로 처리. 처리량이 늘어도 응답시간은 단축한 운영 사이클을 만들었습니다.
       </p>
@@ -701,7 +701,7 @@
         <div class="impact-label">정량 임팩트</div>
         <ul>
           <li>4개월 누적 <b>1,752건</b>, 7월 단일월 <b>629건</b> 최고치</li>
-          <li>팀 6인 중 <b>1위</b> · 점유 29% · 평균 대비 <b>+74%</b></li>
+          <li>팀 6인 중 <b>1위</b> · 점유 29% · 평균의 <b>1.74배</b></li>
         </ul>
       </div>
     </article>
@@ -709,26 +709,26 @@
     <article class="project reveal featured">
       <div class="featured-badge">★ FEATURED</div>
       <div class="project-num">PROJECT 02</div>
-      <h3 class="project-title">Octoparse 크롤링 → '앗뜨공' 서비스 데이터 기여</h3>
-      <p class="period">영업운영팀 재직 중 · 업무 확장 제안 발 신규 업무</p>
+      <h3 class="project-title">Octoparse 크롤링 → 사내 신규 서비스 데이터 기여</h3>
+      <p class="period">영업운영 조직 재직 중 · 업무 확장 제안 발 신규 업무</p>
       <div class="tags"><span class="tag">Octoparse</span><span class="tag">크롤링</span><span class="tag">서비스 기여</span></div>
       <p class="description">
-        팀장님께 <b>"업무를 더 배우고 싶다"</b>고 제안한 것을 계기로 받은 신규 업무. Octoparse를 익혀 대기업·공공기관·빅테크·미디어 채용 데이터를 수집해 <b>'앗뜨공' 서비스</b>에 활용 가능한 형태로 정리했습니다.
+        팀장님께 <b>"업무를 더 배우고 싶다"</b>고 제안한 것을 계기로 받은 신규 업무. Octoparse를 익혀 대기업·공공기관·빅테크·미디어 채용 데이터를 수집해 <b>사내 신규 채용 정보 서비스</b>에 활용 가능한 형태로 정리했습니다.
       </p>
       <div class="impact">
         <div class="impact-label">정성 가치</div>
         <ul>
           <li>제안 → 신규 지시 → 도구 학습 → 완수의 <b>자기주도 사이클</b></li>
-          <li>이 경험이 <b>성과관리팀 이동(2025.08)</b>의 직접적 계기</li>
+          <li>이 경험이 <b>성과관리 조직 이동(2025.08)</b>의 직접적 계기</li>
         </ul>
       </div>
     </article>
 
   </div>
 
-  <!-- ★ 성과관리팀 시기 -->
+  <!-- ★ 성과관리 조직 시기 -->
   <div class="project-era reveal" style="margin-top:56px;">
-    <h3>사업추진본부 성과지원실 성과관리팀</h3>
+    <h3>성과관리 조직</h3>
     <span class="era-period">2025.08 ~ 현재</span>
     <span class="era-count">7 PROJECTS</span>
   </div>
@@ -738,17 +738,17 @@
     <article class="project reveal featured">
       <div class="featured-badge">★ FEATURED</div>
       <div class="project-num">PROJECT 03</div>
-      <h3 class="project-title">JK ↔ OP(원픽) 그룹 일원화</h3>
+      <h3 class="project-title">두 사이트 ACNT 그룹 일원화</h3>
       <p class="period">'25.08 ~ '26.05 (수렴 예정)</p>
-      <div class="tags"><span class="tag">태블로</span><span class="tag">엑셀</span><span class="tag">마그마</span></div>
+      <div class="tags"><span class="tag">태블로</span><span class="tag">엑셀</span><span class="tag">사내 운영 어드민</span></div>
       <p class="description">
-        두 사이트 ACNT가 부서별로 다르게 등록되어 있던 구조를 KA → JK1·2·3 → 대행사·본사 순으로 분기·반기 단위로 일원화.
+        사이트 J와 O의 ACNT가 부서별로 무분별하게 찢어져 있던 데이터를 분기·반기 단위로 일원화했습니다.
       </p>
       <div class="impact">
         <div class="impact-label">정량 임팩트</div>
         <ul>
           <li>오차율 <b>313% → 1%</b> · '26.05.01 0% 수렴 예정</li>
-          <li>KA영업팀 격차: JK 2,747 / OP 16,623 → <b>동일</b></li>
+          <li>Key Account 팀 격차: 사이트 J 2,747 / 사이트 O 16,623 → <b>동일</b></li>
         </ul>
       </div>
     </article>
@@ -772,7 +772,7 @@
 
     <article class="project reveal">
       <div class="project-num">PROJECT 05</div>
-      <h3 class="project-title">영업팀 접촉 커버리지 분석 → 팀장급 보고</h3>
+      <h3 class="project-title">영업팀 접촉 커버리지 분석</h3>
       <p class="period">2025.10</p>
       <div class="tags"><span class="tag">태블로</span><span class="tag">SQL/Athena</span><span class="tag">전략 분석</span></div>
       <p class="description">
@@ -789,11 +789,11 @@
 
     <article class="project reveal">
       <div class="project-num">PROJECT 06</div>
-      <h3 class="project-title">OP ACNT 프로시저 분석 — 자동 할당 로직 발견</h3>
+      <h3 class="project-title">사이트 O ACNT 프로시저 분석 — 자동 할당 로직 발견</h3>
       <p class="period">2025.08 ~ 2025.09</p>
       <div class="tags"><span class="tag">DB 프로시저</span><span class="tag">SQL</span><span class="tag">로직 분석</span></div>
       <p class="description">
-        OP ACNT 관련 <b>프로시저 6개</b>를 직접 검수해, 신규 ACNT가 마지막 접촉자 기준으로 자동 할당되는 구조적 로직을 발견했습니다.
+        사이트 O ACNT 관련 <b>프로시저 6개</b>를 직접 검수해, 신규 ACNT가 마지막 접촉자 기준으로 자동 할당되는 구조적 로직을 발견했습니다.
       </p>
       <div class="impact">
         <div class="impact-label">발견 · 평가</div>
@@ -806,11 +806,11 @@
 
     <article class="project reveal">
       <div class="project-num">PROJECT 07</div>
-      <h3 class="project-title">OP ACNT 마그마 SOP화 (인수인계 공백 → 팀 자산)</h3>
+      <h3 class="project-title">사이트 O ACNT 운영 어드민 SOP화</h3>
       <p class="period">2025.08 ~ 2025.09</p>
-      <div class="tags"><span class="tag">마그마</span><span class="tag">SOP</span><span class="tag">팀 배포</span></div>
+      <div class="tags"><span class="tag">사내 운영 어드민</span><span class="tag">SOP</span><span class="tag">팀 배포</span></div>
       <p class="description">
-        팀 이관 시점 표준이 없던 마그마 ACNT 할당 4개 버튼(그룹이동·분리·통합·onepick) 활용법을 정립해 팀에 배포했습니다.
+        팀 이관 시점 표준이 없던 사내 운영 어드민의 ACNT 할당 4개 버튼(그룹이동·분리·통합·원픽) 활용법을 정립해 팀에 배포했습니다.
       </p>
       <div class="impact">
         <div class="impact-label">정량 임팩트</div>
@@ -851,7 +851,7 @@
         <div class="impact-label">엔지니어링 가치</div>
         <ul>
           <li>건당 BI 5개 조회 + 매트릭스 + 답변 공수를 <b>분 단위로 단축</b>, 담당자 간 판정 편차 제거</li>
-          <li>사내 정책(본사 우선·브랜드채용관 50%·승인 4단계 등)을 <b>코드 레벨 내재화</b></li>
+          <li>사내 정책(직영 우선·특수 채용관 50%·승인 4단계 등)을 <b>코드 레벨 내재화</b></li>
           <li><b>9차 반복 개선</b>으로 판정 방향 버그 자가 발견·수정</li>
           <li><b>Human-in-the-loop</b>: ZERO_ZERO 모호 케이스 자동 답변 차단</li>
         </ul>
@@ -874,14 +874,48 @@
     <div class="tags"><span class="tag">SQL/Athena</span><span class="tag">태블로</span><span class="tag">엑셀</span><span class="tag">노션</span></div>
     <div class="impact">
       <ul>
-        <li><b>쿠팡 데일리 리포트·검수</b> — 매영업일 송부, JK 3~5직무 / AM 6~10직무 (영업운영팀 시기)</li>
+        <li><b>주요 고객사 데일리 리포트·검수</b> — 매영업일 송부, 사이트 J 3~5직무 / 사이트 A 6~10직무 (영업운영 조직 시기)</li>
         <li><b>데이터 추출·정기 브리핑</b> — 월 1~2회, ACNT별·팀별 빌링금액 등 의사결정 직결 지표</li>
-        <li><b>비표준사업자 AM·JK 일원화</b> — 약 50건 정리(검증 20 + 보강 30)로 정합성 확보</li>
+        <li><b>비표준사업자 사이트 A·J 일원화</b> — 약 50건 정리(검증 20 + 보강 30)로 정합성 확보</li>
         <li><b>영업팀 요청 통계 대행</b> — 5종 데이터 횡단, 월 5~20건, 약 7개월 단일 창구 운영</li>
         <li><b>팀 노션 도입·교육</b> — 26.03 도입 시점 DB 연동·페이지 구조 설계 단독 담당</li>
       </ul>
     </div>
   </article>
+
+  <!-- ★ 정기 루틴 묶음 -->
+  <div class="project-era reveal" style="margin-top:56px;" id="routine">
+    <h3>정기 루틴 업무</h3>
+    <span class="era-period">정해진 주기 반복</span>
+    <span class="era-count">3 ITEMS</span>
+  </div>
+
+  <table class="routine-table reveal" style="margin-top:8px;">
+    <thead>
+      <tr>
+        <th style="width: 32%;">업무</th>
+        <th style="width: 14%;">주기</th>
+        <th>사용 도구</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>사이트 A 쿠폰 할당</b></td>
+        <td><span class="freq">월 1회</span></td>
+        <td>사내 운영 어드민</td>
+      </tr>
+      <tr>
+        <td><b>사이트 O ACNT 신규 할당</b></td>
+        <td><span class="freq">데일리</span></td>
+        <td>태블로 · 엑셀 · 사내 운영 어드민</td>
+      </tr>
+      <tr>
+        <td><b>사이트 J / A ACNT 신규 할당</b></td>
+        <td><span class="freq">주간</span></td>
+        <td>태블로 · 엑셀 · 사내 운영 어드민</td>
+      </tr>
+    </tbody>
+  </table>
 
 </section>
 
@@ -907,7 +941,7 @@
       <ul>
         <li>태블로 (대시보드 운영)</li>
         <li>HTML / 공고 운영</li>
-        <li>마그마 · 잡코리아·알바몬 관리자</li>
+        <li>사내 운영 어드민 · 양 플랫폼 관리자</li>
       </ul>
     </div>
     <div class="skill-cat">
@@ -939,56 +973,8 @@
   </div>
 </section>
 
-<!-- ============ ROUTINE ============ -->
-<section class="content" id="routine">
-  <div class="reveal">
-    <div class="section-tag">OPERATIONS</div>
-    <h2 class="section-title">정기 루틴 업무</h2>
-    <p class="section-lede">성과관리팀에서 정해진 주기로 반복 수행하는 핵심 운영 3건입니다.</p>
-  </div>
-  <table class="routine-table reveal">
-    <thead>
-      <tr>
-        <th style="width: 32%;">업무</th>
-        <th style="width: 14%;">주기</th>
-        <th>사용 도구</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>AM 쿠폰 할당</b></td>
-        <td><span class="freq">월 1회</span></td>
-        <td>마그마</td>
-      </tr>
-      <tr>
-        <td><b>OP ACNT 신규 할당</b></td>
-        <td><span class="freq">데일리</span></td>
-        <td>태블로 · 엑셀 · 마그마</td>
-      </tr>
-      <tr>
-        <td><b>JK / AM ACNT 신규 할당</b></td>
-        <td><span class="freq">주간</span></td>
-        <td>태블로 · 엑셀 · 마그마</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section class="content" id="contact">
-  <div class="contact-card reveal">
-    <h3>함께 일할 수 있는 자리에 관심이 있어요</h3>
-    <p class="lede">파견 → 계약직 · 정규직 전환 또는 협업 제안이 있다면 연락 부탁드립니다.</p>
-    <div class="contact-buttons">
-      <a href="mailto:arlee165@worxphere.ai" class="btn btn-primary">이메일 보내기</a>
-      <a href="#" class="btn btn-secondary">사내 슬랙</a>
-      <a href="#" class="btn btn-secondary">노션 페이지</a>
-    </div>
-  </div>
-</section>
-
 <footer>
-  © 2026 이아람 · v4 · 최종 업데이트 2026.04.28
+  이아람
 </footer>
 
 <script>
