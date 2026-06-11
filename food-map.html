@@ -436,6 +436,16 @@ function initMap(){
   ps = new kakao.maps.services.Places();
   kakao.maps.event.addListener(map, 'click', closePopup);
 
+  // 길찾기 출발지(회사) 좌표를 미리 확보 (모바일 앱 길찾기에 사용)
+  if (OFFICE && OFFICE.name){
+    ps.keywordSearch(OFFICE.name, (data, status) => {
+      if (status === kakao.maps.services.Status.OK && data.length){
+        OFFICE.lat = parseFloat(data[0].y);
+        OFFICE.lng = parseFloat(data[0].x);
+      }
+    }, { location: new kakao.maps.LatLng(CENTER.lat, CENTER.lng), radius: 2000, size: 1 });
+  }
+
   renderFilters();
   // 각 가게 좌표 확보 → 마커 생성
   let pending = PLACES.length;
@@ -489,19 +499,31 @@ function photosOf(p){
     .filter(x => x && x.src);
 }
 
-// 길찾기 URL: OFFICE.name 이 있으면 그곳을 출발지로 고정
-function wayUrl(p){
-  if (OFFICE && OFFICE.name){
-    return `https://map.kakao.com/?sName=${encodeURIComponent(OFFICE.name)}&eName=${encodeURIComponent(p.name)}`;
+function isMobile(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
+
+// PC 웹: 도착지 지정 카카오맵 (출발지는 현재 위치)
+function wayWebUrl(p){
+  return `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
+}
+
+// 길찾기 클릭: 모바일이면 앱으로 열어 출발지(회사)·도착지 모두 세팅, PC면 웹 도착지 링크
+function wayClick(i){
+  const p = PLACES[i];
+  if (!p.lat || !p.lng) return;
+  if (isMobile() && OFFICE && OFFICE.lat){
+    // kakaomap 앱 스킴: 출발지=회사, 도착지=가게 (대중교통)
+    location.href = `kakaomap://route?sp=${OFFICE.lat},${OFFICE.lng}&ep=${p.lat},${p.lng}&by=PUBLICTRANSIT`;
+    // 앱이 없으면 웹으로 폴백
+    setTimeout(() => window.open(wayWebUrl(p), '_blank'), 700);
+    return;
   }
-  if (p.lat && p.lng) return `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
-  return null;
+  window.open(wayWebUrl(p), '_blank');
 }
 
 function closePopup(){ if (popup){ popup.setMap(null); popup = null; } }
 
 function openInfo(p, i){
-  const to_url = wayUrl(p);
+  const hasLoc = p.lat && p.lng;
   const el = document.createElement('div');
   el.className = 'popcard';
   el.innerHTML = `
@@ -511,7 +533,7 @@ function openInfo(p, i){
     <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>') || '맛집 정보를 채워주세요'}</div>
     <div class="lk">
       <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 사진·상세</a>
-      ${to_url ? `<a class="w" href="${to_url}" target="_blank">길찾기</a>` : ''}
+      ${hasLoc ? `<a class="w" href="javascript:void(0)" onclick="wayClick(${i})">길찾기</a>` : ''}
     </div>`;
   closePopup();
   popup = new kakao.maps.CustomOverlay({
@@ -526,7 +548,7 @@ function openDetail(i){
   const c = colorOf(p.cat);
   const photos = photosOf(p);
   const map_url = (p.lat && p.lng) ? `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}` : null;
-  const to_url  = wayUrl(p);
+  const hasLoc = p.lat && p.lng;
 
   const gallery = photos.length
     ? `<div class="gallery">${photos.map(ph =>
@@ -548,9 +570,9 @@ function openDetail(i){
       ${p.note ? `<div class="row"><b>📝 메모</b> · ${p.note}</div>` : ''}
       ${p._addr ? `<div class="row"><b>📍 주소</b> · ${p._addr}</div>` : ''}
       ${(p.tags&&p.tags.length) ? `<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>` : ''}
-      ${(map_url||to_url) ? `<div class="links">
+      ${(map_url||hasLoc) ? `<div class="links">
         ${map_url ? `<a class="m" href="${p.placeUrl||map_url}" target="_blank">카카오맵에서 보기</a>` : ''}
-        ${to_url ? `<a class="w" href="${to_url}" target="_blank">길찾기</a>` : ''}
+        ${hasLoc ? `<a class="w" href="javascript:void(0)" onclick="wayClick(${i})">길찾기</a>` : ''}
       </div>` : ''}
     </div>`;
   document.getElementById('modal').classList.add('open');
