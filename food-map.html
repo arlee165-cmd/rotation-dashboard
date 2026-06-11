@@ -185,7 +185,7 @@
   /* ── Map popup card (custom overlay) ── */
   .popcard {
     position: relative;
-    transform: translate(-50%, calc(-100% - 42px));
+    transform: translate(-50%, -46px);
     width: 320px;
     background: #fff;
     border: 1px solid rgba(0,0,0,.04);
@@ -193,8 +193,9 @@
     box-shadow: 0 16px 48px rgba(0,0,0,.2), 0 3px 10px rgba(0,0,0,.08);
     padding: 20px 22px 22px;
     cursor: default;
-    animation: pop .18s cubic-bezier(.16,1,.3,1);
+    animation: popfade .16s ease;
   }
+  @keyframes popfade { from { opacity: 0 } to { opacity: 1 } }
   .popcard::after {
     content: '';
     position: absolute; left: 50%; bottom: -10px;
