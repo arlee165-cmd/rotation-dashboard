@@ -5,246 +5,261 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🍴 우리 회사 맛집지도 (교대역)</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.min.css");
 
+  :root {
+    --ink: #18181b;
+    --muted: #71717a;
+    --faint: #a1a1aa;
+    --line: #f0f0f2;
+    --line-2: #e7e7ea;
+    --surface: #fafafa;
+    --radius: 16px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow: 0 8px 28px rgba(0,0,0,.07);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: #f8fafc;
-    color: #1e293b;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: #fff;
+    color: var(--ink);
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ── Header ── */
   .header {
     flex: 0 0 auto;
-    padding: 16px 24px;
+    padding: 18px 26px;
     background: #fff;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--line);
     display: flex;
     align-items: center;
     gap: 16px;
   }
   .header h1 {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    color: var(--ink);
     white-space: nowrap;
   }
-  .header .sub { font-size: 12px; color: #94a3b8; white-space: nowrap; }
-  .header .search {
-    margin-left: auto;
-    position: relative;
-  }
+  .header .sub { font-size: 12.5px; color: var(--faint); margin-top: 3px; white-space: nowrap; }
+  .header .search { margin-left: auto; position: relative; }
   .header .search input {
-    width: 240px;
-    padding: 9px 14px 9px 36px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    width: 260px;
+    padding: 11px 15px 11px 40px;
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: var(--surface);
     outline: none;
-    transition: border-color .15s, box-shadow .15s;
+    transition: all .15s;
   }
+  .header .search input::placeholder { color: var(--faint); }
   .header .search input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    border-color: var(--ink);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(24,24,27,.06);
   }
   .header .search::before {
     content: '🔍';
     position: absolute;
-    left: 11px; top: 50%;
+    left: 13px; top: 50%;
     transform: translateY(-50%);
     font-size: 13px;
+    opacity: .5;
   }
 
   /* ── Category chips ── */
   .filters {
     flex: 0 0 auto;
-    padding: 12px 24px;
+    padding: 14px 26px;
     background: #fff;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--line);
     display: flex;
     gap: 8px;
     overflow-x: auto;
   }
+  .filters::-webkit-scrollbar { display: none; }
   .chip {
     flex: 0 0 auto;
-    padding: 6px 14px;
+    padding: 8px 15px;
     border-radius: 999px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--line-2);
     background: #fff;
     font-size: 13px;
     font-weight: 500;
-    color: #64748b;
+    color: var(--muted);
     cursor: pointer;
     transition: all .15s;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     user-select: none;
+    letter-spacing: -0.01em;
   }
-  .chip .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .chip.active { color: #fff; border-color: transparent; }
-  .chip:hover { transform: translateY(-1px); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .chip:hover { background: var(--surface); border-color: var(--line-2); }
+  .chip.active { color: #fff; border-color: transparent; box-shadow: var(--shadow-sm); }
+  .chip.active .dot { background: rgba(255,255,255,.85) !important; }
 
   /* ── Layout ── */
   .main { flex: 1 1 auto; display: flex; min-height: 0; }
   .sidebar {
-    flex: 0 0 320px;
+    flex: 0 0 344px;
     background: #fff;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid var(--line);
     overflow-y: auto;
-    padding: 12px;
+    padding: 16px;
   }
-  .sidebar .count { font-size: 12px; color: #94a3b8; padding: 4px 8px 10px; }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+  .sidebar .count { font-size: 12px; color: var(--faint); font-weight: 500; padding: 4px 8px 12px; }
+
   .card {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
     cursor: pointer;
-    transition: all .15s;
-    position: relative;
-    overflow: hidden;
+    transition: transform .18s, box-shadow .18s, border-color .18s;
+    background: #fff;
   }
-  .card::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 4px;
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--line-2); }
+  .card.active { border-color: var(--ink); box-shadow: var(--shadow); }
+  .card .name { font-size: 15.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; line-height: 1.35; }
+  .card .cat {
+    flex: 0 0 auto;
+    font-size: 11px; font-weight: 600; letter-spacing: -0.01em;
+    padding: 3px 9px; border-radius: 7px; color: #fff;
   }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.07); }
-  .card.active { border-color: #2563eb; box-shadow: 0 6px 20px rgba(37,99,235,.15); }
-  .card .name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-  .card .cat { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 6px; color:#fff; }
-  .card .meta { font-size: 12px; color: #64748b; margin-top: 7px; line-height: 1.5; }
-  .card .tags { margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap; }
-  .card .tag { font-size: 11px; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; }
-  .card .rating { font-size: 12px; color: #f59e0b; font-weight: 600; }
-  .card .links { margin-top: 9px; display: flex; gap: 8px; }
-  .card .links a {
-    font-size: 12px; font-weight: 500; text-decoration: none;
-    color: #2563eb; padding: 4px 10px; border: 1px solid #dbeafe;
-    border-radius: 7px; background: #eff6ff;
+  .card .thumb {
+    width: 100%; height: 134px; border-radius: 12px; object-fit: cover;
+    margin: 11px 0 3px; background: var(--surface); display: block;
   }
-  .card .links a:hover { background: #dbeafe; }
-  .card .links a.way { color:#d97706; border-color:#fde68a; background:#fffbeb; }
-  .card .links a.way:hover { background:#fef3c7; }
+  .card .meta { font-size: 12.5px; color: var(--muted); margin-top: 9px; line-height: 1.65; }
+  .card .tags { margin-top: 11px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .card .tag { font-size: 11px; color: var(--muted); background: var(--surface); padding: 3px 9px; border-radius: 7px; }
 
   #map { flex: 1 1 auto; min-width: 0; }
 
-  /* Map markers (custom overlay) */
-  .pin {
-    position: relative;
-    transform: translate(-50%, -100%);
-    cursor: pointer;
-  }
+  /* ── Map markers (custom overlay) ── */
+  .pin { position: relative; transform: translate(-50%, -100%); cursor: pointer; }
   .pin .body {
     background: #fff;
-    border: 2px solid var(--c);
+    border: 1px solid rgba(0,0,0,.05);
     border-radius: 999px;
-    padding: 3px 9px 3px 6px;
+    padding: 5px 12px 5px 8px;
     font-size: 12px;
     font-weight: 600;
-    color: #1e293b;
+    color: #27272a;
+    letter-spacing: -0.01em;
     white-space: nowrap;
-    box-shadow: 0 3px 10px rgba(0,0,0,.18);
-    display: flex; align-items: center; gap: 5px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14), 0 1px 3px rgba(0,0,0,.08);
+    display: flex; align-items: center; gap: 6px;
+    transition: all .15s;
   }
-  .pin .body .ico { width: 16px; height: 16px; border-radius: 50%; background: var(--c); display:inline-block; }
+  .pin .body .ico { width: 8px; height: 8px; border-radius: 50%; background: var(--c); display: inline-block; flex: 0 0 auto; }
   .pin::after {
     content: '';
-    position: absolute;
-    left: 50%; bottom: -7px;
+    position: absolute; left: 50%; bottom: -6px;
     transform: translateX(-50%);
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 8px solid var(--c);
+    border-top: 7px solid #fff;
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,.06));
   }
-  .pin.hi .body { background: var(--c); color: #fff; transform: scale(1.08); }
-  .pin.hi .body .ico { background:#fff; }
+  .pin:hover .body { box-shadow: 0 6px 18px rgba(0,0,0,.2); }
+  .pin.hi { z-index: 10; }
+  .pin.hi .body { background: var(--ink); color: #fff; border-color: var(--ink); transform: scale(1.05); }
+  .pin.hi .body .ico { background: #fff; }
+  .pin.hi::after { border-top-color: var(--ink); }
 
-  /* InfoWindow content */
-  .iw { padding: 12px 14px; max-width: 240px; font-family: 'Noto Sans KR', sans-serif; }
-  .iw .n { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-  .iw .c { font-size: 11px; color:#64748b; margin-bottom: 7px; }
-  .iw .d { font-size: 12px; color:#475569; line-height:1.5; }
-  .iw .lk { margin-top: 9px; display:flex; gap:6px; }
-  .iw .lk a { font-size:12px; text-decoration:none; padding:4px 9px; border-radius:6px; }
-  .iw .lk a.m { color:#2563eb; background:#eff6ff; }
-  .iw .lk a.w { color:#d97706; background:#fffbeb; }
+  /* ── InfoWindow content ── */
+  .iw { padding: 15px 17px; max-width: 240px; }
+  .iw .n { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 5px; }
+  .iw .c { font-size: 12px; color: var(--faint); margin-bottom: 9px; }
+  .iw .d { font-size: 12.5px; color: #52525b; line-height: 1.6; }
+  .iw .lk { margin-top: 13px; display: flex; gap: 8px; }
+  .iw .lk a { font-size: 12.5px; font-weight: 600; text-decoration: none; padding: 8px 13px; border-radius: 10px; transition: opacity .15s; }
+  .iw .lk a:hover { opacity: .85; }
+  .iw .lk a.m { color: var(--ink); background: #f4f4f5; }
+  .iw .lk a.w { color: #fff; background: var(--ink); }
 
-  /* Key-missing banner */
+  /* ── Banner ── */
   .banner {
     background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
-    padding: 14px 18px; margin: 0; font-size: 13px; line-height: 1.6;
+    padding: 14px 26px; margin: 0; font-size: 13px; line-height: 1.6;
     display: none;
   }
-  .banner code { background:#fff; padding:1px 6px; border-radius:4px; font-size:12px; }
+  .banner code { background: #fff; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
 
-  /* Sidebar card thumbnail */
-  .card .thumb {
-    width: 100%; height: 120px; border-radius: 9px; object-fit: cover;
-    margin: 8px 0 2px; background: #f1f5f9; display: block;
-  }
-
-  /* Detail modal */
+  /* ── Detail modal ── */
   .modal {
     position: fixed; inset: 0; z-index: 100;
-    background: rgba(15,23,42,.55);
+    background: rgba(24,24,27,.45);
+    backdrop-filter: blur(3px);
     display: none; align-items: center; justify-content: center;
     padding: 24px;
   }
   .modal.open { display: flex; }
   .modal .box {
-    background: #fff; border-radius: 18px; width: 100%; max-width: 560px;
-    max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3);
-    animation: pop .18s ease;
+    background: #fff; border-radius: 22px; width: 100%; max-width: 540px;
+    max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 70px rgba(0,0,0,.28);
+    animation: pop .2s cubic-bezier(.16,1,.3,1);
   }
-  @keyframes pop { from { transform: scale(.96); opacity:.5 } to { transform: scale(1); opacity:1 } }
+  .modal .box::-webkit-scrollbar { width: 8px; }
+  .modal .box::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+  @keyframes pop { from { transform: scale(.95) translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
   .modal .x {
-    position: sticky; top: 0; float: right; margin: 10px 12px 0 0;
-    width: 32px; height: 32px; border-radius: 50%; border: none;
-    background: rgba(255,255,255,.9); cursor: pointer; font-size: 18px; color: #475569;
-    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    position: sticky; top: 14px; float: right; margin: 14px 14px 0 0;
+    width: 34px; height: 34px; border-radius: 50%; border: none;
+    background: rgba(255,255,255,.92); cursor: pointer; font-size: 16px; color: #3f3f46;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15); z-index: 2;
+    transition: background .15s;
   }
-  .modal .x:hover { background:#f1f5f9; }
-  .modal .gallery { display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .modal .x:hover { background: #f4f4f5; }
+  .modal .gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
   .modal .gallery .ph {
     flex: 0 0 100%; scroll-snap-align: start;
-    height: 280px; object-fit: cover; cursor: zoom-in; background:#f1f5f9;
+    height: 270px; object-fit: cover; cursor: zoom-in; background: var(--surface);
   }
   .modal .gallery::-webkit-scrollbar { height: 6px; }
-  .modal .gallery::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius: 3px; }
+  .modal .gallery::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
   .modal .nogallery {
-    height: 140px; display:flex; align-items:center; justify-content:center;
-    color:#94a3b8; font-size:13px; background: linear-gradient(135deg,#f8fafc,#eef2ff);
+    height: 130px; display: flex; align-items: center; justify-content: center;
+    color: var(--faint); font-size: 13px; font-weight: 500;
+    background: var(--surface);
   }
-  .modal .pcap { font-size:11px; color:#94a3b8; text-align:center; padding:6px 0 0; }
-  .modal .body { padding: 18px 22px 24px; }
-  .modal .body h2 { font-size: 22px; font-weight: 700; }
-  .modal .body .sub { font-size: 13px; color:#64748b; margin: 4px 0 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  .modal .body .badge { font-size:12px; font-weight:600; color:#fff; padding:3px 10px; border-radius:7px; }
-  .modal .body .row { font-size: 14px; color:#334155; line-height:1.7; margin: 4px 0; }
-  .modal .body .row b { color:#475569; font-weight:600; }
-  .modal .body .tags { margin: 12px 0; display:flex; gap:6px; flex-wrap:wrap; }
-  .modal .body .tag { font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:7px; }
-  .modal .body .links { margin-top: 16px; display:flex; gap:10px; }
+  .modal .pcap { font-size: 11px; color: var(--faint); text-align: center; padding: 8px 0 0; }
+  .modal .body { padding: 22px 24px 26px; }
+  .modal .body h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .modal .body .sub { font-size: 13px; color: var(--muted); margin: 8px 0 16px; display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+  .modal .body .badge { font-size: 11.5px; font-weight: 600; color: #fff; padding: 4px 10px; border-radius: 8px; letter-spacing: -0.01em; }
+  .modal .body .row { font-size: 14px; color: #3f3f46; line-height: 1.7; margin: 5px 0; }
+  .modal .body .row b { color: var(--ink); font-weight: 600; }
+  .modal .body .tags { margin: 14px 0; display: flex; gap: 7px; flex-wrap: wrap; }
+  .modal .body .tag { font-size: 12px; color: var(--muted); background: var(--surface); padding: 4px 11px; border-radius: 8px; }
+  .modal .body .links { margin-top: 18px; display: flex; gap: 10px; }
   .modal .body .links a {
-    flex:1; text-align:center; text-decoration:none; font-weight:600; font-size:14px;
-    padding:11px; border-radius:11px;
+    flex: 1; text-align: center; text-decoration: none; font-weight: 600; font-size: 14px;
+    padding: 13px; border-radius: 13px; transition: opacity .15s;
   }
-  .modal .body .links a.m { color:#fff; background:#2563eb; }
-  .modal .body .links a.w { color:#fff; background:#f59e0b; }
+  .modal .body .links a:hover { opacity: .88; }
+  .modal .body .links a.m { color: var(--ink); background: #f4f4f5; }
+  .modal .body .links a.w { color: #fff; background: var(--ink); }
 
   @media (max-width: 720px) {
-    .sidebar { flex-basis: 220px; }
+    .header { padding: 16px; }
+    .filters { padding: 12px 16px; }
+    .sidebar { flex-basis: 240px; }
     .header .search input { width: 150px; }
   }
 </style>
@@ -261,11 +276,7 @@
   </div>
 </div>
 
-<div class="banner" id="banner">
-  ⚠️ <b>카카오 JavaScript 키가 아직 안 들어갔어요.</b>
-  이 파일 맨 아래 <code>const KAKAO_JS_KEY = '여기에_키';</code> 부분에 발급받은 키를 넣어주세요.
-  (developers.kakao.com → 내 애플리케이션 → 앱 키 → JavaScript 키)
-</div>
+<div class="banner" id="banner"></div>
 
 <div class="filters" id="filters"></div>
 
@@ -337,7 +348,7 @@ const CATEGORIES = {
   '카페':  { label: '카페',  color: '#a16207' },
   '회식':  { label: '회식·술', color: '#0ea5e9' },
 };
-const DEFAULT_COLOR = '#64748b';
+const DEFAULT_COLOR = '#71717a';
 
 /* ③ 지도 초기 중심 = 교대역 */
 const CENTER = { lat: 37.49348, lng: 127.01447 };
@@ -454,15 +465,14 @@ function wayUrl(p){
 }
 
 function openInfo(p, i){
-  const map_url = `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
   const to_url  = wayUrl(p);
   const html = `<div class="iw">
     <div class="n">${p.name}</div>
-    <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐'+p.rating : ''}</div>
+    <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐ '+p.rating : ''}</div>
     <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>')}</div>
     <div class="lk">
       <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 상세</a>
-      <a class="w" href="${to_url}" target="_blank">길찾기</a>
+      ${to_url ? `<a class="w" href="${to_url}" target="_blank">길찾기</a>` : ''}
     </div>
   </div>`;
   infowindow.setContent(html);
@@ -530,7 +540,7 @@ function renderFilters(){
   const all = document.createElement('div');
   const allActive = activeCats.size === Object.keys(CATEGORIES).length;
   all.className = 'chip' + (allActive ? ' active':'');
-  if (allActive) all.style.background = '#1e293b';
+  if (allActive) all.style.background = '#18181b';
   all.textContent = '전체';
   all.onclick = () => {
     if (activeCats.size === Object.keys(CATEGORIES).length) activeCats.clear();
@@ -579,9 +589,9 @@ function render(){
   list.innerHTML = items.map(({p,i}) => {
     const c = colorOf(p.cat);
     const ph = photosOf(p);
-    return `<div class="card ${i===activeIdx?'active':''}" data-i="${i}" style="--c:${c}" onclick="selectPlace(${i})">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <div class="name">${p.name}${p._notfound?' <span style="color:#ef4444;font-size:11px">(위치 못 찾음)</span>':''}</div>
+    return `<div class="card ${i===activeIdx?'active':''}" data-i="${i}" onclick="selectPlace(${i})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div class="name">${p.name}${p._notfound?' <span style="color:#ef4444;font-size:11px;font-weight:500">(위치 못 찾음)</span>':''}</div>
         <span class="cat" style="background:${c}">${labelOf(p.cat)}</span>
       </div>
       ${ph.length ? `<img class="thumb" src="${ph[0].src}" alt="${p.name}"
@@ -589,16 +599,12 @@ function render(){
             onerror="this.style.display='none'">` : ''}
       <div class="meta">
         ${p.menu ? '🍽 '+p.menu+'<br>':''}
-        ${p.price ? '💰 '+p.price+'  ':''}${p.rating ? '⭐ '+p.rating:''}
+        ${p.price ? '💰 '+p.price+'&nbsp;&nbsp;':''}${p.rating ? '⭐ '+p.rating:''}
         ${p.note ? '<br>📝 '+p.note:''}
       </div>
       ${(p.tags&&p.tags.length)?`<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>`:''}
     </div>`;
-  }).join('') || '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:13px">결과가 없어요</div>';
-  // 카드의 좌측 색 바
-  list.querySelectorAll('.card').forEach(card=>{
-    card.style.setProperty('border-left', `4px solid ${card.style.getPropertyValue('--c')}`);
-  });
+  }).join('') || '<div style="padding:24px;text-align:center;color:#a1a1aa;font-size:13px">결과가 없어요</div>';
 }
 
 loadKakao();
