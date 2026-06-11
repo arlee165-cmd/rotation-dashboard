@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍴 우리 회사 맛집지도 (교대역)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  .header {
+    flex: 0 0 auto;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+  }
+  .header .sub { font-size: 12px; color: #94a3b8; white-space: nowrap; }
+  .header .search {
+    margin-left: auto;
+    position: relative;
+  }
+  .header .search input {
+    width: 240px;
+    padding: 9px 14px 9px 36px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .header .search input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+  }
+  .header .search::before {
+    content: '🔍';
+    position: absolute;
+    left: 11px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+  }
+
+  /* ── Category chips ── */
+  .filters {
+    flex: 0 0 auto;
+    padding: 12px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .chip {
+    flex: 0 0 auto;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .chip .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .chip.active { color: #fff; border-color: transparent; }
+  .chip:hover { transform: translateY(-1px); }
+
+  /* ── Layout ── */
+  .main { flex: 1 1 auto; display: flex; min-height: 0; }
+  .sidebar {
+    flex: 0 0 320px;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
+    overflow-y: auto;
+    padding: 12px;
+  }
+  .sidebar .count { font-size: 12px; color: #94a3b8; padding: 4px 8px 10px; }
+  .card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.07); }
+  .card.active { border-color: #2563eb; box-shadow: 0 6px 20px rgba(37,99,235,.15); }
+  .card .name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .card .cat { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 6px; color:#fff; }
+  .card .meta { font-size: 12px; color: #64748b; margin-top: 7px; line-height: 1.5; }
+  .card .tags { margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap; }
+  .card .tag { font-size: 11px; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; }
+  .card .rating { font-size: 12px; color: #f59e0b; font-weight: 600; }
+  .card .links { margin-top: 9px; display: flex; gap: 8px; }
+  .card .links a {
+    font-size: 12px; font-weight: 500; text-decoration: none;
+    color: #2563eb; padding: 4px 10px; border: 1px solid #dbeafe;
+    border-radius: 7px; background: #eff6ff;
+  }
+  .card .links a:hover { background: #dbeafe; }
+  .card .links a.way { color:#d97706; border-color:#fde68a; background:#fffbeb; }
+  .card .links a.way:hover { background:#fef3c7; }
+
+  #map { flex: 1 1 auto; min-width: 0; }
+
+  /* Map markers (custom overlay) */
+  .pin {
+    position: relative;
+    transform: translate(-50%, -100%);
+    cursor: pointer;
+  }
+  .pin .body {
+    background: #fff;
+    border: 2px solid var(--c);
+    border-radius: 999px;
+    padding: 3px 9px 3px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0,0,0,.18);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .pin .body .ico { width: 16px; height: 16px; border-radius: 50%; background: var(--c); display:inline-block; }
+  .pin::after {
+    content: '';
+    position: absolute;
+    left: 50%; bottom: -7px;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--c);
+  }
+  .pin.hi .body { background: var(--c); color: #fff; transform: scale(1.08); }
+  .pin.hi .body .ico { background:#fff; }
+
+  /* InfoWindow content */
+  .iw { padding: 12px 14px; max-width: 240px; font-family: 'Noto Sans KR', sans-serif; }
+  .iw .n { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .iw .c { font-size: 11px; color:#64748b; margin-bottom: 7px; }
+  .iw .d { font-size: 12px; color:#475569; line-height:1.5; }
+  .iw .lk { margin-top: 9px; display:flex; gap:6px; }
+  .iw .lk a { font-size:12px; text-decoration:none; padding:4px 9px; border-radius:6px; }
+  .iw .lk a.m { color:#2563eb; background:#eff6ff; }
+  .iw .lk a.w { color:#d97706; background:#fffbeb; }
+
+  /* Key-missing banner */
+  .banner {
+    background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+    padding: 14px 18px; margin: 0; font-size: 13px; line-height: 1.6;
+    display: none;
+  }
+  .banner code { background:#fff; padding:1px 6px; border-radius:4px; font-size:12px; }
+
+  @media (max-width: 720px) {
+    .sidebar { flex-basis: 220px; }
+    .header .search input { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🍴 우리 회사 맛집지도</h1>
+    <div class="sub">교대역 점심·회식 맛집 모음</div>
+  </div>
+  <div class="search">
+    <input id="q" type="text" placeholder="가게·메뉴 검색…" oninput="render()">
+  </div>
+</div>
+
+<div class="banner" id="banner">
+  ⚠️ <b>카카오 JavaScript 키가 아직 안 들어갔어요.</b>
+  이 파일 맨 아래 <code>const KAKAO_JS_KEY = '여기에_키';</code> 부분에 발급받은 키를 넣어주세요.
+  (developers.kakao.com → 내 애플리케이션 → 앱 키 → JavaScript 키)
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="count" id="count"></div>
+    <div id="list"></div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script>
+/* =========================================================================
+   ① 맛집 데이터 — 여기만 채우면 됩니다.
+   - name  : 가게 이름 (필수)
+   - cat   : 카테고리 (아래 CATEGORIES 의 key 중 하나)
+   - keyword(선택) : 카카오 검색어. 안 넣으면 name 으로 검색.
+   - lat,lng(선택) : 좌표를 직접 알면 넣기. 없으면 카카오가 자동으로 찾음.
+   - menu, price, note, rating, tags 는 모두 선택.
+   가게 추가 = 아래 배열에 { } 한 줄 복붙해서 늘리면 끝!
+   ========================================================================= */
+const PLACES = [
+  {
+    name: '예시 - 교대 국밥집',
+    cat: '한식',
+    keyword: '교대역 국밥',     // 실제 가게명/검색어로 교체하세요
+    menu: '돼지국밥, 수육',
+    price: '1만원 이하',
+    rating: 4.3,
+    note: '점심 줄 빠름. 깍두기 맛집',
+    tags: ['점심', '혼밥OK'],
+  },
+  {
+    name: '예시 - 서초 파스타',
+    cat: '양식',
+    keyword: '교대역 파스타',
+    menu: '봉골레, 트러플 리조또',
+    price: '1~2만원',
+    rating: 4.5,
+    note: '팀 회식하기 좋음. 예약 추천',
+    tags: ['회식', '데이트'],
+  },
+];
+
+/* ② 카테고리 정의 (key → 라벨/색상). 필요하면 추가/수정하세요. */
+const CATEGORIES = {
+  '한식':  { label: '한식',  color: '#ef4444' },
+  '중식':  { label: '중식',  color: '#f97316' },
+  '일식':  { label: '일식',  color: '#3b82f6' },
+  '양식':  { label: '양식',  color: '#8b5cf6' },
+  '분식':  { label: '분식',  color: '#ec4899' },
+  '아시안':{ label: '아시안',color: '#14b8a6' },
+  '카페':  { label: '카페',  color: '#a16207' },
+  '회식':  { label: '회식·술', color: '#0ea5e9' },
+};
+const DEFAULT_COLOR = '#64748b';
+
+/* ③ 지도 초기 중심 = 교대역 */
+const CENTER = { lat: 37.49348, lng: 127.01447 };
+
+/* ───────────────────────────────────────────────────────────────────────
+   ④ 카카오 JavaScript 키 — 여기에 발급받은 키를 넣어주세요.
+   ─────────────────────────────────────────────────────────────────────── */
+const KAKAO_JS_KEY = 'cb306ee620a0bcd92f66c1bb664636b2';
+
+/* ===================== 이하 로직 (수정 불필요) ===================== */
+let map, ps, infowindow;
+const activeCats = new Set(Object.keys(CATEGORIES));
+let activeIdx = -1;
+
+function colorOf(cat){ return (CATEGORIES[cat] && CATEGORIES[cat].color) || DEFAULT_COLOR; }
+function labelOf(cat){ return (CATEGORIES[cat] && CATEGORIES[cat].label) || cat || '기타'; }
+
+function loadKakao(){
+  if (!KAKAO_JS_KEY || KAKAO_JS_KEY.indexOf('여기에') === 0){
+    document.getElementById('banner').style.display = 'block';
+    renderFilters(); render();      // 키 없어도 목록은 보이게
+    return;
+  }
+  const s = document.createElement('script');
+  s.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_JS_KEY}&libraries=services&autoload=false`;
+  s.onload = () => kakao.maps.load(initMap);
+  s.onerror = () => { document.getElementById('banner').style.display='block'; };
+  document.head.appendChild(s);
+}
+
+function initMap(){
+  map = new kakao.maps.Map(document.getElementById('map'), {
+    center: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
+    level: 4,
+  });
+  ps = new kakao.maps.services.Places();
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 10, removable: true });
+
+  renderFilters();
+  // 각 가게 좌표 확보 → 마커 생성
+  let pending = PLACES.length;
+  PLACES.forEach((p, i) => {
+    if (typeof p.lat === 'number' && typeof p.lng === 'number'){
+      makeMarker(p, i); if(--pending===0) finishLoad();
+    } else {
+      const kw = p.keyword || p.name;
+      ps.keywordSearch(kw, (data, status) => {
+        if (status === kakao.maps.services.Status.OK && data.length){
+          p.lat = parseFloat(data[0].y); p.lng = parseFloat(data[0].x);
+          p._addr = data[0].road_address_name || data[0].address_name || '';
+          if(!p.placeUrl) p.placeUrl = data[0].place_url;
+          makeMarker(p, i);
+        } else {
+          p._notfound = true;
+          console.warn('좌표 못 찾음:', kw);
+        }
+        if(--pending===0) finishLoad();
+      }, {
+        location: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
+        radius: 3000, size: 1,
+      });
+    }
+  });
+}
+
+function makeMarker(p, i){
+  const c = colorOf(p.cat);
+  const el = document.createElement('div');
+  el.className = 'pin';
+  el.style.setProperty('--c', c);
+  el.innerHTML = `<div class="body"><span class="ico"></span>${p.name}</div>`;
+  el.addEventListener('click', () => selectPlace(i));
+  const overlay = new kakao.maps.CustomOverlay({
+    position: new kakao.maps.LatLng(p.lat, p.lng),
+    content: el, yAnchor: 1, zIndex: 5,
+  });
+  overlay.setMap(map);
+  p._overlay = overlay;
+  p._el = el;
+}
+
+function finishLoad(){ render(); }
+
+function openInfo(p){
+  const map_url = `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
+  const to_url  = `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
+  const html = `<div class="iw">
+    <div class="n">${p.name}</div>
+    <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐'+p.rating : ''}</div>
+    <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>')}</div>
+    <div class="lk">
+      <a class="m" href="${p.placeUrl || map_url}" target="_blank">카카오맵</a>
+      <a class="w" href="${to_url}" target="_blank">길찾기</a>
+    </div>
+  </div>`;
+  infowindow.setContent(html);
+  infowindow.setPosition(new kakao.maps.LatLng(p.lat, p.lng));
+  infowindow.open(map);
+}
+
+function selectPlace(i){
+  activeIdx = i;
+  const p = PLACES[i];
+  if (map && p.lat){
+    map.panTo(new kakao.maps.LatLng(p.lat, p.lng));
+    openInfo(p);
+  }
+  // 핀 강조
+  PLACES.forEach(q => q._el && q._el.classList.remove('hi'));
+  if (p._el) p._el.classList.add('hi');
+  render();
+  // 사이드바 카드로 스크롤
+  const card = document.querySelector(`.card[data-i="${i}"]`);
+  if (card) card.scrollIntoView({ block:'nearest', behavior:'smooth' });
+}
+
+function renderFilters(){
+  const box = document.getElementById('filters');
+  box.innerHTML = '';
+  // 전체
+  const all = document.createElement('div');
+  const allActive = activeCats.size === Object.keys(CATEGORIES).length;
+  all.className = 'chip' + (allActive ? ' active':'');
+  if (allActive) all.style.background = '#1e293b';
+  all.textContent = '전체';
+  all.onclick = () => {
+    if (activeCats.size === Object.keys(CATEGORIES).length) activeCats.clear();
+    else Object.keys(CATEGORIES).forEach(k => activeCats.add(k));
+    syncOverlays(); renderFilters(); render();
+  };
+  box.appendChild(all);
+
+  Object.entries(CATEGORIES).forEach(([k, v]) => {
+    const chip = document.createElement('div');
+    const on = activeCats.has(k);
+    chip.className = 'chip' + (on ? ' active':'');
+    if (on) chip.style.background = v.color;
+    chip.innerHTML = `<span class="dot" style="background:${v.color}"></span>${v.label}`;
+    chip.onclick = () => {
+      if (activeCats.has(k)) activeCats.delete(k); else activeCats.add(k);
+      syncOverlays(); renderFilters(); render();
+    };
+    box.appendChild(chip);
+  });
+}
+
+function syncOverlays(){
+  PLACES.forEach(p => {
+    if (!p._overlay) return;
+    p._overlay.setMap(activeCats.has(p.cat) ? map : null);
+  });
+}
+
+function visiblePlaces(){
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  return PLACES
+    .map((p,i)=>({p,i}))
+    .filter(({p}) => activeCats.has(p.cat))
+    .filter(({p}) => {
+      if (!q) return true;
+      return [p.name, p.menu, p.note, (p.tags||[]).join(' '), labelOf(p.cat)]
+        .filter(Boolean).join(' ').toLowerCase().includes(q);
+    });
+}
+
+function render(){
+  const list = document.getElementById('list');
+  const items = visiblePlaces();
+  document.getElementById('count').textContent = `${items.length}곳`;
+  list.innerHTML = items.map(({p,i}) => {
+    const c = colorOf(p.cat);
+    return `<div class="card ${i===activeIdx?'active':''}" data-i="${i}" style="--c:${c}" onclick="selectPlace(${i})">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div class="name">${p.name}${p._notfound?' <span style="color:#ef4444;font-size:11px">(위치 못 찾음)</span>':''}</div>
+        <span class="cat" style="background:${c}">${labelOf(p.cat)}</span>
+      </div>
+      <div class="meta">
+        ${p.menu ? '🍽 '+p.menu+'<br>':''}
+        ${p.price ? '💰 '+p.price+'  ':''}${p.rating ? '⭐ '+p.rating:''}
+        ${p.note ? '<br>📝 '+p.note:''}
+      </div>
+      ${(p.tags&&p.tags.length)?`<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('') || '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:13px">결과가 없어요</div>';
+  // 카드의 좌측 색 바
+  list.querySelectorAll('.card').forEach(card=>{
+    card.style.setProperty('border-left', `4px solid ${card.style.getPropertyValue('--c')}`);
+  });
+}
+
+loadKakao();
+</script>
+</body>
+</html>
