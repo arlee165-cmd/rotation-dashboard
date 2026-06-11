@@ -342,6 +342,9 @@ const DEFAULT_COLOR = '#64748b';
 /* ③ 지도 초기 중심 = 교대역 */
 const CENTER = { lat: 37.49348, lng: 127.01447 };
 
+/* ③-1 길찾기 고정 출발지 (회사). name 을 비우면 출발지=내 위치 로 동작 */
+const OFFICE = { name: '동익성봉빌딩' };
+
 /* ───────────────────────────────────────────────────────────────────────
    ④ 카카오 JavaScript 키 — 여기에 발급받은 키를 넣어주세요.
    ─────────────────────────────────────────────────────────────────────── */
@@ -441,9 +444,18 @@ function photosOf(p){
     .filter(x => x && x.src);
 }
 
+// 길찾기 URL: OFFICE.name 이 있으면 그곳을 출발지로 고정
+function wayUrl(p){
+  if (OFFICE && OFFICE.name){
+    return `https://map.kakao.com/?sName=${encodeURIComponent(OFFICE.name)}&eName=${encodeURIComponent(p.name)}`;
+  }
+  if (p.lat && p.lng) return `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
+  return null;
+}
+
 function openInfo(p, i){
   const map_url = `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
-  const to_url  = `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
+  const to_url  = wayUrl(p);
   const html = `<div class="iw">
     <div class="n">${p.name}</div>
     <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐'+p.rating : ''}</div>
@@ -463,7 +475,7 @@ function openDetail(i){
   const c = colorOf(p.cat);
   const photos = photosOf(p);
   const map_url = (p.lat && p.lng) ? `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}` : null;
-  const to_url  = (p.lat && p.lng) ? `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}` : null;
+  const to_url  = wayUrl(p);
 
   const gallery = photos.length
     ? `<div class="gallery">${photos.map(ph =>
