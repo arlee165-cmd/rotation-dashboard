@@ -188,6 +188,61 @@
   }
   .banner code { background:#fff; padding:1px 6px; border-radius:4px; font-size:12px; }
 
+  /* Sidebar card thumbnail */
+  .card .thumb {
+    width: 100%; height: 120px; border-radius: 9px; object-fit: cover;
+    margin: 8px 0 2px; background: #f1f5f9; display: block;
+  }
+
+  /* Detail modal */
+  .modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(15,23,42,.55);
+    display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .modal.open { display: flex; }
+  .modal .box {
+    background: #fff; border-radius: 18px; width: 100%; max-width: 560px;
+    max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    animation: pop .18s ease;
+  }
+  @keyframes pop { from { transform: scale(.96); opacity:.5 } to { transform: scale(1); opacity:1 } }
+  .modal .x {
+    position: sticky; top: 0; float: right; margin: 10px 12px 0 0;
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: rgba(255,255,255,.9); cursor: pointer; font-size: 18px; color: #475569;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  }
+  .modal .x:hover { background:#f1f5f9; }
+  .modal .gallery { display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .modal .gallery .ph {
+    flex: 0 0 100%; scroll-snap-align: start;
+    height: 280px; object-fit: cover; cursor: zoom-in; background:#f1f5f9;
+  }
+  .modal .gallery::-webkit-scrollbar { height: 6px; }
+  .modal .gallery::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius: 3px; }
+  .modal .nogallery {
+    height: 140px; display:flex; align-items:center; justify-content:center;
+    color:#94a3b8; font-size:13px; background: linear-gradient(135deg,#f8fafc,#eef2ff);
+  }
+  .modal .pcap { font-size:11px; color:#94a3b8; text-align:center; padding:6px 0 0; }
+  .modal .body { padding: 18px 22px 24px; }
+  .modal .body h2 { font-size: 22px; font-weight: 700; }
+  .modal .body .sub { font-size: 13px; color:#64748b; margin: 4px 0 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .modal .body .badge { font-size:12px; font-weight:600; color:#fff; padding:3px 10px; border-radius:7px; }
+  .modal .body .row { font-size: 14px; color:#334155; line-height:1.7; margin: 4px 0; }
+  .modal .body .row b { color:#475569; font-weight:600; }
+  .modal .body .tags { margin: 12px 0; display:flex; gap:6px; flex-wrap:wrap; }
+  .modal .body .tag { font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:7px; }
+  .modal .body .links { margin-top: 16px; display:flex; gap:10px; }
+  .modal .body .links a {
+    flex:1; text-align:center; text-decoration:none; font-weight:600; font-size:14px;
+    padding:11px; border-radius:11px;
+  }
+  .modal .body .links a.m { color:#fff; background:#2563eb; }
+  .modal .body .links a.w { color:#fff; background:#f59e0b; }
+
   @media (max-width: 720px) {
     .sidebar { flex-basis: 220px; }
     .header .search input { width: 150px; }
@@ -222,6 +277,13 @@
   <div id="map"></div>
 </div>
 
+<div class="modal" id="modal" onclick="if(event.target===this)closeDetail()">
+  <div class="box">
+    <button class="x" onclick="closeDetail()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
 <script>
 /* =========================================================================
    ① 맛집 데이터 — 여기만 채우면 됩니다.
@@ -230,6 +292,10 @@
    - keyword(선택) : 카카오 검색어. 안 넣으면 name 으로 검색.
    - lat,lng(선택) : 좌표를 직접 알면 넣기. 없으면 카카오가 자동으로 찾음.
    - menu, price, note, rating, tags 는 모두 선택.
+   - photos(선택) : 사진 경로 배열. 클릭 시 갤러리로 표시. (첫 장 = 대표 썸네일)
+       · 레포 안 images/ 폴더에 파일 넣고 'images/파일명.jpg' 처럼 적기
+       · 외부 URL도 가능: 'https://.../photo.jpg'
+       · { src:'images/menu.jpg', cap:'메뉴판' } 처럼 캡션도 가능
    가게 추가 = 아래 배열에 { } 한 줄 복붙해서 늘리면 끝!
    ========================================================================= */
 const PLACES = [
@@ -242,6 +308,10 @@ const PLACES = [
     rating: 4.3,
     note: '점심 줄 빠름. 깍두기 맛집',
     tags: ['점심', '혼밥OK'],
+    photos: [
+      // 'images/국밥집_대표.jpg',
+      // { src:'images/국밥집_메뉴판.jpg', cap:'메뉴판' },
+    ],
   },
   {
     name: '예시 - 서초 파스타',
@@ -252,6 +322,7 @@ const PLACES = [
     rating: 4.5,
     note: '팀 회식하기 좋음. 예약 추천',
     tags: ['회식', '데이트'],
+    photos: [],
   },
 ];
 
@@ -362,7 +433,15 @@ function makeMarker(p, i){
 
 function finishLoad(){ render(); }
 
-function openInfo(p){
+// photos 항목을 {src, cap} 형태로 정규화 (문자열도 허용)
+function photosOf(p){
+  return (p.photos || [])
+    .filter(Boolean)
+    .map(x => typeof x === 'string' ? { src:x, cap:'' } : x)
+    .filter(x => x && x.src);
+}
+
+function openInfo(p, i){
   const map_url = `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
   const to_url  = `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
   const html = `<div class="iw">
@@ -370,7 +449,7 @@ function openInfo(p){
     <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐'+p.rating : ''}</div>
     <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>')}</div>
     <div class="lk">
-      <a class="m" href="${p.placeUrl || map_url}" target="_blank">카카오맵</a>
+      <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 상세</a>
       <a class="w" href="${to_url}" target="_blank">길찾기</a>
     </div>
   </div>`;
@@ -379,12 +458,49 @@ function openInfo(p){
   infowindow.open(map);
 }
 
+function openDetail(i){
+  const p = PLACES[i];
+  const c = colorOf(p.cat);
+  const photos = photosOf(p);
+  const map_url = (p.lat && p.lng) ? `https://map.kakao.com/link/map/${encodeURIComponent(p.name)},${p.lat},${p.lng}` : null;
+  const to_url  = (p.lat && p.lng) ? `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}` : null;
+
+  const gallery = photos.length
+    ? `<div class="gallery">${photos.map(ph =>
+        `<img class="ph" src="${ph.src}" alt="${ph.cap||p.name}" onclick="window.open(this.src,'_blank')"
+              onerror="this.style.display='none'">`).join('')}</div>
+       ${photos.some(ph=>ph.cap) ? `<div class="pcap">${photos.map(ph=>ph.cap).filter(Boolean).join(' · ')}</div>` : ''}`
+    : `<div class="nogallery">🍽 사진이 아직 없어요</div>`;
+
+  document.getElementById('modalContent').innerHTML = `
+    ${gallery}
+    <div class="body">
+      <h2>${p.name}</h2>
+      <div class="sub">
+        <span class="badge" style="background:${c}">${labelOf(p.cat)}</span>
+        ${p.price ? '<span>'+p.price+'</span>' : ''}
+        ${p.rating ? '<span style="color:#f59e0b;font-weight:600">⭐ '+p.rating+'</span>' : ''}
+      </div>
+      ${p.menu ? `<div class="row"><b>🍽 메뉴</b> · ${p.menu}</div>` : ''}
+      ${p.note ? `<div class="row"><b>📝 메모</b> · ${p.note}</div>` : ''}
+      ${p._addr ? `<div class="row"><b>📍 주소</b> · ${p._addr}</div>` : ''}
+      ${(p.tags&&p.tags.length) ? `<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>` : ''}
+      ${(map_url||to_url) ? `<div class="links">
+        ${map_url ? `<a class="m" href="${p.placeUrl||map_url}" target="_blank">카카오맵에서 보기</a>` : ''}
+        ${to_url ? `<a class="w" href="${to_url}" target="_blank">길찾기</a>` : ''}
+      </div>` : ''}
+    </div>`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeDetail(){ document.getElementById('modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeDetail(); });
+
 function selectPlace(i){
   activeIdx = i;
   const p = PLACES[i];
   if (map && p.lat){
     map.panTo(new kakao.maps.LatLng(p.lat, p.lng));
-    openInfo(p);
+    openInfo(p, i);
   }
   // 핀 강조
   PLACES.forEach(q => q._el && q._el.classList.remove('hi'));
@@ -450,11 +566,15 @@ function render(){
   document.getElementById('count').textContent = `${items.length}곳`;
   list.innerHTML = items.map(({p,i}) => {
     const c = colorOf(p.cat);
+    const ph = photosOf(p);
     return `<div class="card ${i===activeIdx?'active':''}" data-i="${i}" style="--c:${c}" onclick="selectPlace(${i})">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
         <div class="name">${p.name}${p._notfound?' <span style="color:#ef4444;font-size:11px">(위치 못 찾음)</span>':''}</div>
         <span class="cat" style="background:${c}">${labelOf(p.cat)}</span>
       </div>
+      ${ph.length ? `<img class="thumb" src="${ph[0].src}" alt="${p.name}"
+            onclick="event.stopPropagation();openDetail(${i})"
+            onerror="this.style.display='none'">` : ''}
       <div class="meta">
         ${p.menu ? '🍽 '+p.menu+'<br>':''}
         ${p.price ? '💰 '+p.price+'  ':''}${p.rating ? '⭐ '+p.rating:''}
