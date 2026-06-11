@@ -472,7 +472,7 @@ function makeMarker(p, i){
   el.addEventListener('click', () => selectPlace(i));
   const overlay = new kakao.maps.CustomOverlay({
     position: new kakao.maps.LatLng(p.lat, p.lng),
-    content: el, yAnchor: 1, zIndex: 5,
+    content: el, yAnchor: 1, zIndex: 5, clickable: true,
   });
   overlay.setMap(map);
   p._overlay = overlay;
@@ -516,7 +516,7 @@ function openInfo(p, i){
   closePopup();
   popup = new kakao.maps.CustomOverlay({
     position: new kakao.maps.LatLng(p.lat, p.lng),
-    content: el, yAnchor: 1, zIndex: 30,
+    content: el, yAnchor: 1, zIndex: 30, clickable: true,
   });
   popup.setMap(map);
 }
