@@ -182,16 +182,49 @@
   .pin.hi .body .ico { background: #fff; }
   .pin.hi::after { border-top-color: var(--ink); }
 
-  /* ── InfoWindow content ── */
-  .iw { padding: 15px 17px; max-width: 240px; }
-  .iw .n { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 5px; }
-  .iw .c { font-size: 12px; color: var(--faint); margin-bottom: 9px; }
-  .iw .d { font-size: 12.5px; color: #52525b; line-height: 1.6; }
-  .iw .lk { margin-top: 13px; display: flex; gap: 8px; }
-  .iw .lk a { font-size: 12.5px; font-weight: 600; text-decoration: none; padding: 8px 13px; border-radius: 10px; transition: opacity .15s; }
-  .iw .lk a:hover { opacity: .85; }
-  .iw .lk a.m { color: var(--ink); background: #f4f4f5; }
-  .iw .lk a.w { color: #fff; background: var(--ink); }
+  /* ── Map popup card (custom overlay) ── */
+  .popcard {
+    position: relative;
+    transform: translate(-50%, calc(-100% - 42px));
+    width: 320px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.04);
+    border-radius: 20px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.2), 0 3px 10px rgba(0,0,0,.08);
+    padding: 20px 22px 22px;
+    cursor: default;
+    animation: pop .18s cubic-bezier(.16,1,.3,1);
+  }
+  .popcard::after {
+    content: '';
+    position: absolute; left: 50%; bottom: -10px;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 11px solid #fff;
+    filter: drop-shadow(0 4px 2px rgba(0,0,0,.06));
+  }
+  .popcard .x {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 50%; border: none;
+    background: #f4f4f5; color: #71717a; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .popcard .x:hover { background: #e7e7ea; }
+  .popcard .n { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; padding-right: 32px; }
+  .popcard .c { font-size: 13px; color: var(--faint); margin: 7px 0 12px; }
+  .popcard .c .star { color: #f59e0b; font-weight: 600; }
+  .popcard .d { font-size: 14px; color: #3f3f46; line-height: 1.7; }
+  .popcard .lk { margin-top: 18px; display: flex; gap: 10px; }
+  .popcard .lk a {
+    flex: 1; text-align: center; white-space: nowrap;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    padding: 12px; border-radius: 13px; transition: opacity .15s;
+  }
+  .popcard .lk a:hover { opacity: .88; }
+  .popcard .lk a.m { color: var(--ink); background: #f4f4f5; }
+  .popcard .lk a.w { color: #fff; background: var(--ink); }
 
   /* ── Banner ── */
   .banner {
@@ -362,7 +395,7 @@ const OFFICE = { name: '동익성봉빌딩' };
 const KAKAO_JS_KEY = 'cb306ee620a0bcd92f66c1bb664636b2';
 
 /* ===================== 이하 로직 (수정 불필요) ===================== */
-let map, ps, infowindow;
+let map, ps, popup = null;
 const activeCats = new Set(Object.keys(CATEGORIES));
 let activeIdx = -1;
 
@@ -400,7 +433,7 @@ function initMap(){
     level: 4,
   });
   ps = new kakao.maps.services.Places();
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 10, removable: true });
+  kakao.maps.event.addListener(map, 'click', closePopup);
 
   renderFilters();
   // 각 가게 좌표 확보 → 마커 생성
@@ -464,20 +497,27 @@ function wayUrl(p){
   return null;
 }
 
+function closePopup(){ if (popup){ popup.setMap(null); popup = null; } }
+
 function openInfo(p, i){
-  const to_url  = wayUrl(p);
-  const html = `<div class="iw">
+  const to_url = wayUrl(p);
+  const el = document.createElement('div');
+  el.className = 'popcard';
+  el.innerHTML = `
+    <button class="x" onclick="closePopup()">✕</button>
     <div class="n">${p.name}</div>
-    <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · ⭐ '+p.rating : ''}</div>
-    <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>')}</div>
+    <div class="c">${labelOf(p.cat)}${p.price ? ' · '+p.price : ''}${p.rating ? ' · <span class="star">⭐ '+p.rating+'</span>' : ''}</div>
+    <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>') || '맛집 정보를 채워주세요'}</div>
     <div class="lk">
-      <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 상세</a>
+      <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 사진·상세</a>
       ${to_url ? `<a class="w" href="${to_url}" target="_blank">길찾기</a>` : ''}
-    </div>
-  </div>`;
-  infowindow.setContent(html);
-  infowindow.setPosition(new kakao.maps.LatLng(p.lat, p.lng));
-  infowindow.open(map);
+    </div>`;
+  closePopup();
+  popup = new kakao.maps.CustomOverlay({
+    position: new kakao.maps.LatLng(p.lat, p.lng),
+    content: el, yAnchor: 1, zIndex: 30,
+  });
+  popup.setMap(map);
 }
 
 function openDetail(i){
