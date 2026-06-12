@@ -94,6 +94,33 @@
   }
   .rand:hover { background: #000; }
   .rand:active { transform: scale(.95); }
+  .rand.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line-2); }
+  .rand.ghost:hover { background: var(--surface); }
+
+  /* 제보 폼 */
+  .modal .form { padding: 24px 24px 26px; }
+  .modal .form h2 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+  .modal .form .formsub { font-size: 13px; color: var(--muted); margin: 7px 0 18px; line-height: 1.5; }
+  .modal .form label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin: 14px 0 6px; }
+  .modal .form label .req { color: #ef4444; }
+  .modal .form label .opt { color: var(--faint); font-weight: 500; }
+  .modal .form input, .modal .form textarea {
+    width: 100%; font-family: inherit; font-size: 14px; color: var(--ink);
+    padding: 11px 13px; border: 1px solid var(--line-2); border-radius: 11px;
+    background: var(--surface); outline: none; transition: all .15s; resize: vertical;
+  }
+  .modal .form input:focus, .modal .form textarea:focus { border-color: var(--ink); background: #fff; box-shadow: 0 0 0 4px rgba(24,24,27,.06); }
+  .modal .form .frow { display: flex; gap: 12px; }
+  .modal .form .frow > div { flex: 1; }
+  .modal .form .submitbtn {
+    width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 13px;
+    background: var(--ink); color: #fff; font-family: inherit; font-weight: 600; font-size: 15px;
+    cursor: pointer; transition: background .15s;
+  }
+  .modal .form .submitbtn:hover { background: #000; }
+  .modal .form .formmsg { font-size: 13px; margin-top: 12px; text-align: center; line-height: 1.5; }
+  .modal .form .formmsg.ok { color: #16a34a; font-weight: 600; }
+  .modal .form .formmsg.err { color: #ef4444; font-weight: 600; }
   .filters {
     flex: 1 1 auto; min-width: 0;
     display: flex;
@@ -366,6 +393,7 @@
 
 <div class="toolbar">
   <button class="rand" onclick="randomPick()">🎲 오늘 뭐먹지?</button>
+  <button class="rand ghost" onclick="openSubmit()">✏️ 제보</button>
   <div class="filters" id="filters"></div>
 </div>
 
@@ -383,6 +411,36 @@
   <div class="box">
     <button class="x" onclick="closeDetail()">✕</button>
     <div id="modalContent"></div>
+  </div>
+</div>
+
+<div class="modal" id="submitModal" onclick="if(event.target===this)closeSubmit()">
+  <div class="box">
+    <button class="x" onclick="closeSubmit()">✕</button>
+    <div class="form">
+      <h2>✏️ 맛집 제보하기</h2>
+      <p class="formsub">네이버 지도 링크만 있으면 돼요. 가게 이름·위치는 자동으로 채워집니다 🙂</p>
+      <label>네이버 지도 링크 <span class="req">*</span></label>
+      <input id="f_link" type="url" placeholder="https://naver.me/...">
+      <label>한줄 메모</label>
+      <textarea id="f_memo" rows="3" placeholder="예: 점심 웨이팅 짧음, 깍두기 맛집"></textarea>
+      <div class="frow">
+        <div>
+          <label>평점 (1~5)</label>
+          <input id="f_rating" type="number" min="1" max="5" step="0.5" placeholder="4.5">
+        </div>
+        <div>
+          <label>제보자 <span class="opt">(선택)</span></label>
+          <input id="f_nick" type="text" placeholder="닉네임">
+        </div>
+      </div>
+      <label>대표사진 URL <span class="opt">(선택)</span></label>
+      <input id="f_photo" type="url" placeholder="네이버 사진 우클릭 → 이미지 주소 복사">
+      <label>메뉴판 URL <span class="opt">(선택)</span></label>
+      <input id="f_menu" type="url" placeholder="메뉴판 사진 주소">
+      <button class="submitbtn" onclick="submitTip()">제보 보내기</button>
+      <div class="formmsg" id="formmsg"></div>
+    </div>
   </div>
 </div>
 
@@ -881,6 +939,9 @@ const OFFICE = { name: '동익성봉빌딩' };
    ─────────────────────────────────────────────────────────────────────── */
 const KAKAO_JS_KEY = 'cb306ee620a0bcd92f66c1bb664636b2';
 
+/* ⑤ 제보 받기 — 구글 Apps Script 웹앱 URL(/exec). 배포 후 여기에 붙여넣으세요. 비우면 폼이 안내만 표시 */
+const SUBMIT_URL = '';
+
 /* ===================== 이하 로직 (수정 불필요) ===================== */
 let map, ps, geocoder, popup = null;
 const activeCats = new Set(Object.keys(CATEGORIES));
@@ -1120,7 +1181,26 @@ function openDetail(i){
   document.getElementById('modal').classList.add('open');
 }
 function closeDetail(){ document.getElementById('modal').classList.remove('open'); }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeDetail(); });
+
+// ── 맛집 제보 폼 ──
+function openSubmit(){ document.getElementById('submitModal').classList.add('open'); }
+function closeSubmit(){ document.getElementById('submitModal').classList.remove('open'); }
+function fval(id){ return (document.getElementById(id).value || '').trim(); }
+function submitTip(){
+  const msg = document.getElementById('formmsg');
+  const link = fval('f_link');
+  if (!/^https?:\/\//.test(link)){ msg.textContent = '네이버 지도 링크를 넣어주세요.'; msg.className = 'formmsg err'; return; }
+  if (!SUBMIT_URL){ msg.textContent = '⚠️ 제보 받기가 아직 설정 전이에요. (관리자가 SUBMIT_URL 설정 필요)'; msg.className = 'formmsg err'; return; }
+  const payload = { link, memo: fval('f_memo'), rating: fval('f_rating'), photo: fval('f_photo'), menu: fval('f_menu'), nick: fval('f_nick') };
+  msg.textContent = '보내는 중…'; msg.className = 'formmsg';
+  const done = () => {
+    msg.textContent = '✅ 제보 감사합니다! 검토 후 지도에 추가할게요.'; msg.className = 'formmsg ok';
+    ['f_link','f_memo','f_rating','f_photo','f_menu','f_nick'].forEach(id => document.getElementById(id).value = '');
+  };
+  fetch(SUBMIT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    .then(done).catch(done);
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail(); closeSubmit(); } });
 
 function selectPlace(i){
   activeIdx = i;
