@@ -111,14 +111,31 @@
   .chip.active .dot { background: rgba(255,255,255,.85) !important; }
 
   /* ── Layout ── */
-  .main { flex: 1 1 auto; display: flex; min-height: 0; }
+  .main { flex: 1 1 auto; display: flex; min-height: 0; position: relative; }
   .sidebar {
     flex: 0 0 344px;
     background: #fff;
     border-right: 1px solid var(--line);
     overflow-y: auto;
     padding: 16px;
+    transition: flex-basis .22s ease;
   }
+  /* 접힘 */
+  .main.collapsed .sidebar { display: none; }
+
+  /* 토글 FAB (하단 중앙) */
+  .fab {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 60; border: none; cursor: pointer;
+    padding: 12px 22px; border-radius: 999px;
+    background: var(--ink); color: #fff;
+    font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: -0.01em;
+    box-shadow: 0 8px 24px rgba(0,0,0,.28);
+    display: flex; align-items: center; gap: 7px;
+    transition: transform .12s, background .15s;
+  }
+  .fab:hover { background: #000; }
+  .fab:active { transform: translateX(-50%) scale(.96); }
   .sidebar::-webkit-scrollbar { width: 8px; }
   .sidebar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
   .sidebar .count { font-size: 12px; color: var(--faint); font-weight: 500; padding: 4px 8px 12px; }
@@ -295,8 +312,13 @@
   @media (max-width: 720px) {
     .header { padding: 16px; }
     .filters { padding: 12px 16px; }
-    .sidebar { flex-basis: 240px; }
     .header .search input { width: 150px; }
+    /* 모바일: 목록은 지도를 덮는 전체화면 */
+    .sidebar {
+      position: absolute; inset: 0; z-index: 40;
+      flex-basis: auto; width: 100%; border-right: none;
+      padding: 14px 14px 88px;
+    }
   }
 </style>
 </head>
@@ -324,6 +346,8 @@
   <div id="map"></div>
 </div>
 
+<button class="fab" id="toggleBtn" onclick="toggleSidebar()">🗺 지도 크게보기</button>
+
 <div class="modal" id="modal" onclick="if(event.target===this)closeDetail()">
   <div class="box">
     <button class="x" onclick="closeDetail()">✕</button>
@@ -349,131 +373,131 @@ const PLACES = [
   {
     name: "담뿍화로된장찌개 교대 6호점",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로26길 16 1층 담뿍화로된장 교대점",
     keyword: "담뿍화로된장찌개 교대 6호점",
     note: "점심 된장찌개에 화제육 같이먹으면 좋음 밥에 계란후라이도 나옴, 저녁에 고기메뉴도 괜찮음",
     rating: 4.5,
     tags: ["점심", "된장찌개"],
-    naver: "https://naver.me/5ne4SPMk",
     photos: [{"src": "images/1419122535_main_1.jpg", "cap": ""}, {"src": "images/1419122535_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1419122535_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
     name: "명동 곰돌이",
     cat: ["한식"],
+    addr: "서울 서초구 서초대로55길 11",
     keyword: "명동 곰돌이",
     note: "신기한 맛의 칼국수,, 내취향은 아님",
     rating: 3.0,
     tags: ["칼국수"],
-    naver: "https://naver.me/GEXh9Kkk",
     photos: [{"src": "images/19878202_main_1.jpg", "cap": ""}, {"src": "images/19878202_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
     name: "우된장 교대본점",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로26길 11 1층 101호",
     keyword: "우된장 교대본점",
     note: "한식 한상정식 먹고싶으면 강추, 늦게가면 줄 김",
     rating: 4.0,
     tags: ["한상정식", "점심"],
-    naver: "https://naver.me/xzxmS4gO",
     photos: [{"src": "images/1530031734_main_1.jpg", "cap": ""}, {"src": "images/1530031734_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
     name: "방이편백육분삼십 교대점",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로26길 3 1층",
     keyword: "방이편백육분삼십 교대점",
     note: "편백찜도 괜찮고, 들기름 막국수도 괜찮음 / 예약안하면 11:30에 칼같이 가야함 예약 추천 / 편백찜 인당 14,000~5,000나오는듯",
     rating: 4.5,
     tags: ["편백찜", "막국수", "예약필수"],
-    naver: "https://naver.me/IMyGUsgU",
     photos: [{"src": "images/1033062058_main_1.jpg", "cap": ""}, {"src": "images/1033062058_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1033062058_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
     name: "차반자리",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로26길 6 1층",
     keyword: "차반자리",
     note: "돼지곰탕 단일메뉴 집 (김포예주 맛있음) / 밥, 육수는 무한리필됨",
     rating: 4.5,
     tags: ["돼지곰탕"],
-    naver: "https://naver.me/5D8tgvYY",
     photos: [{"src": "images/1776592928_main_1.jpg", "cap": ""}, {"src": "images/1776592928_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
     name: "기와집순두부 서초점",
     cat: ["한식"],
+    addr: "서울 서초구 서초대로51길 14 지하1층",
     keyword: "기와집순두부 서초점",
     note: "순두부밖에 안먹어봄 msg 가득한맛 무난함",
     rating: 3.0,
     tags: ["순두부"],
-    naver: "https://naver.me/5jJTUgcg",
     photos: [{"src": "images/18366711_main_1.jpg", "cap": ""}],
   },
   {
     name: "유성옥 돼지국밥 서초본점",
     cat: ["한식"],
+    addr: "서울 서초구 서초대로51길 14 104호",
     keyword: "유성옥 돼지국밥 서초본점",
     note: "항정국밥 추천 12시쯤은 피하는거 추천 차반자리랑 다른 맛의 국밥 / 특제 다대기 맛있음",
     rating: 4.0,
     tags: ["돼지국밥"],
-    naver: "https://naver.me/xxY2hp1F",
     photos: [{"src": "images/1257140055_main_1.jpg", "cap": ""}, {"src": "images/1257140055_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
     name: "스시한",
     cat: ["일식"],
+    addr: "서울 서초구 서초대로51길 11 2층",
     keyword: "스시한",
     note: "오마카세 누가 사준다하면 무조건 가세요",
     rating: 5.0,
     tags: ["오마카세", "특별한날"],
-    naver: "https://naver.me/GoD7Zf3E",
     photos: [{"src": "images/1496024487_main_1.jpg", "cap": ""}, {"src": "images/1496024487_menu_1.png", "cap": "메뉴판"}],
   },
   {
     name: "서리풀남도",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로 146",
     keyword: "서리풀남도",
     note: "든든한 한식으로 배채우고싶다면 추천 / 제육이랑 고등어 맛있음",
     rating: 4.0,
     tags: ["제육", "점심"],
-    naver: "https://naver.me/xxYV1OwU",
     photos: [{"src": "images/18591103_main_1.jpg", "cap": ""}, {"src": "images/18591103_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
     name: "친화력",
     cat: ["일식", "회식·술"],
+    addr: "서울 서초구 서초중앙로 142 1층 오비노미오 안",
     keyword: "친화력",
     note: "카이센동 맛집 점심회식 장소로 추천",
     rating: 4.5,
     tags: ["카이센동", "회식"],
-    naver: "https://naver.me/FfeOk48n",
     photos: [{"src": "images/1599836460_main_1.jpg", "cap": ""}],
   },
   {
     name: "사보텐 교대역점",
     cat: ["일식"],
+    addr: "서울 서초구 서초중앙로24길 20",
     keyword: "사보텐 교대역점",
     note: "누가 사준다하면 가고 아님 가지말고,, 가성비 안나오는 돈까스집",
     rating: 2.0,
     tags: ["돈가스"],
-    naver: "https://naver.me/FsRi07En",
     photos: [{"src": "images/34363269_main_1.jpg", "cap": ""}, {"src": "images/34363269_menu_1.png", "cap": "메뉴판"}],
   },
   {
     name: "호경전 서초점",
     cat: ["중식", "회식·술"],
+    addr: "서울 서초구 서초중앙로24길 22",
     keyword: "호경전 서초점",
     note: "중식 코스요리 점심회식 장소로 추천  / 유린기 맛있음",
     rating: 4.0,
     tags: ["코스", "회식"],
-    naver: "https://naver.me/5fIpZeXw",
     photos: [{"src": "images/1084410851_main_1.jpg", "cap": ""}],
   },
   {
     name: "봄불고기",
     cat: ["한식"],
+    addr: "서울 서초구 서초중앙로24길 27 G5센트럴프라자 B105",
     keyword: "봄불고기",
     note: "불고기 정식 무난한 집",
     rating: 4.0,
     tags: ["불고기정식"],
-    naver: "https://naver.me/GI39N946",
     photos: [{"src": "images/36643505_main_1.jpg", "cap": ""}],
   },
 ];
@@ -503,7 +527,7 @@ const OFFICE = { name: '동익성봉빌딩' };
 const KAKAO_JS_KEY = 'cb306ee620a0bcd92f66c1bb664636b2';
 
 /* ===================== 이하 로직 (수정 불필요) ===================== */
-let map, ps, popup = null;
+let map, ps, geocoder, popup = null;
 const activeCats = new Set(Object.keys(CATEGORIES));
 let activeIdx = -1;
 
@@ -557,31 +581,54 @@ function initMap(){
     }, { location: new kakao.maps.LatLng(CENTER.lat, CENTER.lng), radius: 2000, size: 1 });
   }
 
+  geocoder = new kakao.maps.services.Geocoder();
   renderFilters();
-  // 각 가게 좌표 확보 → 마커 생성
+  // 각 가게 좌표 확보 → 마커 생성 (주소 우선, 실패 시 이름 검색)
   let pending = PLACES.length;
-  PLACES.forEach((p, i) => {
-    if (typeof p.lat === 'number' && typeof p.lng === 'number'){
-      makeMarker(p, i); if(--pending===0) finishLoad();
+  const tick = () => { if(--pending===0) finishLoad(); };
+  PLACES.forEach((p, i) => locate(p, i, tick));
+}
+
+// 도로명 주소만 깔끔히 추출 (건물명/호수 제거) → 지오코딩 정확도↑
+function roadOf(a){
+  const t = (a||'').split(/\s+/);
+  let ri = -1;
+  for (let k=0;k<t.length;k++){ if(/[로길]\d*$/.test(t[k])){ ri=k; break; } }
+  if (ri<0) return a;
+  for (let k=ri+1;k<t.length;k++){ if(/^\d+(-\d+)?$/.test(t[k])) return t.slice(0,k+1).join(' '); }
+  return t.slice(0,ri+1).join(' ');
+}
+
+function locate(p, i, done){
+  if (typeof p.lat === 'number' && typeof p.lng === 'number'){ makeMarker(p,i); return done(); }
+  if (p.addr){
+    geocoder.addressSearch(roadOf(p.addr), (res, status) => {
+      if (status === kakao.maps.services.Status.OK && res.length){
+        p.lat = parseFloat(res[0].y); p.lng = parseFloat(res[0].x);
+        if(!p._addr) p._addr = p.addr;
+        makeMarker(p,i); return done();
+      }
+      keywordLocate(p,i,done);   // 주소 실패 시 이름으로
+    });
+    return;
+  }
+  keywordLocate(p,i,done);
+}
+
+function keywordLocate(p, i, done){
+  const kw = p.keyword || p.name;
+  ps.keywordSearch(kw, (data, status) => {
+    if (status === kakao.maps.services.Status.OK && data.length){
+      p.lat = parseFloat(data[0].y); p.lng = parseFloat(data[0].x);
+      if(!p._addr) p._addr = data[0].road_address_name || data[0].address_name || '';
+      if(!p.placeUrl) p.placeUrl = data[0].place_url;
+      makeMarker(p, i);
     } else {
-      const kw = p.keyword || p.name;
-      ps.keywordSearch(kw, (data, status) => {
-        if (status === kakao.maps.services.Status.OK && data.length){
-          p.lat = parseFloat(data[0].y); p.lng = parseFloat(data[0].x);
-          p._addr = data[0].road_address_name || data[0].address_name || '';
-          if(!p.placeUrl) p.placeUrl = data[0].place_url;
-          makeMarker(p, i);
-        } else {
-          p._notfound = true;
-          console.warn('좌표 못 찾음:', kw);
-        }
-        if(--pending===0) finishLoad();
-      }, {
-        location: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
-        radius: 3000, size: 1,
-      });
+      p._notfound = true;
+      console.warn('좌표 못 찾음:', kw);
     }
-  });
+    done();
+  }, { location: new kakao.maps.LatLng(CENTER.lat, CENTER.lng), radius: 3000, size: 1 });
 }
 
 function makeMarker(p, i){
@@ -611,6 +658,27 @@ function photosOf(p){
 }
 
 function isMobile(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
+
+// ── 사이드바(목록) 접기/펼치기 + 상태 기억 ──
+let collapsed = false;
+function applyCollapsed(){
+  const main = document.querySelector('.main');
+  if (main) main.classList.toggle('collapsed', collapsed);
+  const b = document.getElementById('toggleBtn');
+  if (b) b.textContent = collapsed ? '📋 목록 보기' : '🗺 지도 크게보기';
+  if (typeof map !== 'undefined' && map && map.relayout) setTimeout(() => map.relayout(), 230);
+}
+function setCollapsed(v, persist){
+  collapsed = v;
+  if (persist){ try { localStorage.setItem('fm_collapsed', v ? '1' : '0'); } catch(e){} }
+  applyCollapsed();
+}
+function toggleSidebar(){ setCollapsed(!collapsed, true); }
+function initSidebar(){
+  let v = false;
+  try { v = localStorage.getItem('fm_collapsed') === '1'; } catch(e){}
+  setCollapsed(v, false);
+}
 
 // PC 웹: 도착지 지정 카카오맵 (출발지는 현재 위치)
 function wayWebUrl(p){
@@ -693,10 +761,13 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') closeDetail(); 
 function selectPlace(i){
   activeIdx = i;
   const p = PLACES[i];
-  if (map && p.lat){
-    map.panTo(new kakao.maps.LatLng(p.lat, p.lng));
-    openInfo(p, i);
-  }
+  // 모바일: 목록이 지도를 덮고 있으면 닫고 지도로 전환 (저장은 안 함)
+  const justOpenedMap = isMobile() && !collapsed;
+  if (justOpenedMap) setCollapsed(true, false);
+  const show = () => {
+    if (map && p.lat){ map.panTo(new kakao.maps.LatLng(p.lat, p.lng)); openInfo(p, i); }
+  };
+  if (justOpenedMap) setTimeout(show, 260); else show();
   // 핀 강조
   PLACES.forEach(q => q._el && q._el.classList.remove('hi'));
   if (p._el) p._el.classList.add('hi');
@@ -780,6 +851,7 @@ function render(){
   }).join('') || '<div style="padding:24px;text-align:center;color:#a1a1aa;font-size:13px">결과가 없어요</div>';
 }
 
+initSidebar();
 loadKakao();
 </script>
 </body>
