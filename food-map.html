@@ -1247,8 +1247,8 @@ function galTo(i){ const g = document.getElementById('gal'); if (g) g.scrollTo({
 
 // 🎲 오늘 뭐먹지 — 현재 켜둔 카테고리/검색 범위 안에서 랜덤 추천
 function randomPick(){
-  const items = visiblePlaces().filter(({p}) => p.lat && p.lng);
-  if (!items.length){ alert('조건에 맞는 맛집이 없어요. 카테고리를 켜보세요!'); return; }
+  const items = visiblePlaces().filter(({p}) => p.lat && p.lng && p.rating >= 3);
+  if (!items.length){ alert('조건에 맞는 맛집이 없어요. (평점 3점 이상 기준)'); return; }
   const pick = items[Math.floor(Math.random() * items.length)];
   selectPlace(pick.i);
 }
