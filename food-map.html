@@ -170,7 +170,8 @@
   #map { flex: 1 1 auto; min-width: 0; }
 
   /* ── Map markers (custom overlay) ── */
-  .pin { position: relative; transform: translate(-50%, -100%); cursor: pointer; }
+  /* 위치 정렬은 카카오 오버레이 앵커(xAnchor 0.5 / yAnchor 1)에 맡김. CSS transform 이동 금지 */
+  .pin { position: relative; cursor: pointer; }
   .pin .body {
     background: #fff;
     border: 1px solid rgba(0,0,0,.05);
@@ -204,7 +205,7 @@
   /* ── Map popup card (custom overlay) ── */
   .popcard {
     position: relative;
-    transform: translate(-50%, -46px);
+    transform: translateY(-46px);
     width: 320px;
     background: #fff;
     border: 1px solid rgba(0,0,0,.04);
