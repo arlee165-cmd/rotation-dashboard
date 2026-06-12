@@ -49,7 +49,8 @@
     white-space: nowrap;
   }
   .header .sub { font-size: 12.5px; color: var(--faint); margin-top: 3px; white-space: nowrap; }
-  .header .search { margin-left: auto; position: relative; }
+  .header .hbtn { margin-left: auto; }
+  .header .search { position: relative; }
   .header .search input {
     width: 260px;
     padding: 11px 15px 11px 40px;
@@ -364,10 +365,11 @@
   .modal .body .links a.w { color: #fff; background: var(--ink); }
 
   @media (max-width: 720px) {
-    .header { padding: 16px; }
+    .header { padding: 14px 16px; gap: 10px; }
     .toolbar { padding: 12px 14px; gap: 9px; }
     .rand { padding: 9px 13px; font-size: 12.5px; }
-    .header .search input { width: 150px; }
+    .header .hbtn { padding: 8px 11px; font-size: 12.5px; }
+    .header .search input { width: 120px; }
     /* 모바일: 목록은 지도를 덮는 전체화면 */
     .sidebar {
       position: absolute; inset: 0; z-index: 40;
@@ -384,6 +386,7 @@
     <h1>🍴 우리 회사 맛집지도</h1>
     <div class="sub">교대역 점심·회식 맛집 모음</div>
   </div>
+  <button class="rand ghost hbtn" onclick="openSubmit()">✏️ 제보</button>
   <div class="search">
     <input id="q" type="text" placeholder="가게·메뉴 검색…" oninput="render()">
   </div>
@@ -393,7 +396,6 @@
 
 <div class="toolbar">
   <button class="rand" onclick="randomPick()">🎲 오늘 뭐먹지?</button>
-  <button class="rand ghost" onclick="openSubmit()">✏️ 제보</button>
   <div class="filters" id="filters"></div>
 </div>
 
