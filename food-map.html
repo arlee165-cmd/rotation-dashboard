@@ -280,19 +280,29 @@
     transition: background .15s;
   }
   .modal .x:hover { background: #f4f4f5; }
-  .modal .gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
-  .modal .gallery .ph {
-    flex: 0 0 100%; scroll-snap-align: start;
-    height: 270px; object-fit: cover; cursor: zoom-in; background: var(--surface);
+  .modal .gallery { display: flex; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .modal .gallery .slide { position: relative; flex: 0 0 100%; width: 100%; scroll-snap-align: start; }
+  .modal .gallery .ph { display: block; width: 100%; height: 270px; object-fit: cover; cursor: zoom-in; background: var(--surface); }
+  .modal .gallery .caplabel {
+    position: absolute; left: 12px; top: 12px;
+    background: rgba(24,24,27,.82); color: #fff; font-size: 12px; font-weight: 600;
+    padding: 5px 11px; border-radius: 8px; letter-spacing: -0.01em;
   }
   .modal .gallery::-webkit-scrollbar { height: 6px; }
   .modal .gallery::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+  .modal .thumbs { display: flex; gap: 8px; padding: 12px 16px 0; overflow-x: auto; }
+  .modal .thumbs::-webkit-scrollbar { display: none; }
+  .modal .thumbs .th {
+    width: 54px; height: 54px; flex: 0 0 auto; border-radius: 9px; object-fit: cover;
+    cursor: pointer; border: 2px solid var(--line-2); transition: border-color .15s;
+  }
+  .modal .thumbs .th:hover { border-color: var(--ink); }
+  .modal .thumbs .th.ismenu { border-color: #f59e0b; }
   .modal .nogallery {
     height: 130px; display: flex; align-items: center; justify-content: center;
     color: var(--faint); font-size: 13px; font-weight: 500;
     background: var(--surface);
   }
-  .modal .pcap { font-size: 11px; color: var(--faint); text-align: center; padding: 8px 0 0; }
   .modal .body { padding: 22px 24px 26px; }
   .modal .body h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
   .modal .body .sub { font-size: 13px; color: var(--muted); margin: 8px 0 16px; display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
@@ -405,7 +415,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 3 1층",
     keyword: "방이편백육분삼십 교대점",
-    note: "편백찜도 괜찮고, 들기름 막국수도 괜찮음 / 예약안하면 11:30에 칼같이 가야함 예약 추천 / 편백찜 인당 14,000~5,000나오는듯",
+    note: "편백찜도 괜찮고, 들기름 막국수도 괜찮음\n예약안하면 11:30에 칼같이 가야함 예약 추천\n편백찜 인당 14,000~5,000나오는듯",
     rating: 4.5,
     tags: ["예약"],
     photos: [{"src": "images/1033062058_main_1.jpg", "cap": ""}, {"src": "images/1033062058_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1033062058_menu_2.jpg", "cap": "메뉴판"}],
@@ -415,7 +425,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 6 1층",
     keyword: "차반자리",
-    note: "돼지곰탕 단일메뉴 집 (김포예주 맛있음) / 밥, 육수는 무한리필됨",
+    note: "돼지곰탕 단일메뉴 집 (김포예주 맛있음)\n밥, 육수는 무한리필됨",
     rating: 4.5,
     photos: [{"src": "images/1776592928_main_1.jpg", "cap": ""}, {"src": "images/1776592928_menu_1.jpg", "cap": "메뉴판"}],
   },
@@ -433,7 +443,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 서초대로51길 14 104호",
     keyword: "유성옥 돼지국밥 서초본점",
-    note: "항정국밥 추천 12시쯤은 피하는거 추천 차반자리랑 다른 맛의 국밥 / 특제 다대기 맛있음",
+    note: "항정국밥 추천 12시쯤은 피하는거 추천 차반자리랑 다른 맛의 국밥\n특제 다대기 맛있음",
     rating: 4.0,
     photos: [{"src": "images/1257140055_main_1.jpg", "cap": ""}, {"src": "images/1257140055_menu_1.jpg", "cap": "메뉴판"}],
   },
@@ -452,7 +462,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로 146",
     keyword: "서리풀남도",
-    note: "든든한 한식으로 배채우고싶다면 추천 / 제육이랑 고등어 맛있음",
+    note: "든든한 한식으로 배채우고싶다면 추천\n제육이랑 고등어 맛있음",
     rating: 4.0,
     photos: [{"src": "images/18591103_main_1.jpg", "cap": ""}, {"src": "images/18591103_menu_1.jpg", "cap": "메뉴판"}],
   },
@@ -481,7 +491,7 @@ const PLACES = [
     cat: ["중식", "회식·술"],
     addr: "서울 서초구 서초중앙로24길 22",
     keyword: "호경전 서초점",
-    note: "중식 코스요리 점심회식 장소로 추천  / 유린기 맛있음",
+    note: "중식 코스요리 점심회식 장소로 추천 \n유린기 맛있음",
     rating: 4.0,
     tags: ["회식", "점심", "코스"],
     photos: [{"src": "images/1084410851_main_1.jpg", "cap": ""}],
@@ -500,7 +510,7 @@ const PLACES = [
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초대로50길 30 2층",
     keyword: "이자카야나무 교대점",
-    note: "룸술집을 원한다면 여기로 무난함 고구마튀김, 나베 추천 / 점심메뉴 있어서 한 번 먹어봤는데 굳이? 여기가서 먹을정돈 아님",
+    note: "룸술집을 원한다면 여기로 무난함 고구마튀김, 나베 추천\n점심메뉴 있어서 한 번 먹어봤는데 굳이? 여기가서 먹을정돈 아님",
     rating: 3.0,
     tags: ["점심"],
     photos: [{"src": "images/1620580872_main_1.jpg", "cap": ""}],
@@ -595,7 +605,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 법원로1길 1 1층 103호",
     keyword: "네모오징어 서초법원점",
-    note: "맛있음 갑오징어랑 튀김 필수 다만 양이 적고 회사에선 거리 멀고 개빨리 나가야함, 예약 추천 / 볶음밥은 밥 일부 덜어두고 나중에 알아서 해먹으면됨",
+    note: "맛있음 갑오징어랑 튀김 필수 다만 양이 적고 회사에선 거리 멀고 개빨리 나가야함, 예약 추천\n볶음밥은 밥 일부 덜어두고 나중에 알아서 해먹으면됨",
     rating: 4.0,
     tags: ["예약"],
     photos: [{"src": "images/1289281377_main_1.jpg", "cap": ""}, {"src": "images/1289281377_menu_1.jpg", "cap": "메뉴판"}],
@@ -614,7 +624,7 @@ const PLACES = [
     cat: ["아시안", "회식·술"],
     addr: "서울 서초구 서초대로50길 105 1층",
     keyword: "이가네양꼬치 교대2호직영점",
-    note: "양꼬치집 회식을위해서는 2호점을 추천, 1호점은 좀 작은 양갈비 할인하면 꼭 양갈비 먹어야댐 / 꿔바로우 보다는 가지요리 추천, 온면도 괜찮음",
+    note: "양꼬치집 회식을위해서는 2호점을 추천, 1호점은 좀 작은 양갈비 할인하면 꼭 양갈비 먹어야댐\n꿔바로우 보다는 가지요리 추천, 온면도 괜찮음",
     rating: 5.0,
     tags: ["회식"],
     photos: [{"src": "images/1111401166_main_1.jpg", "cap": ""}, {"src": "images/1111401166_menu_1.jpg", "cap": "메뉴판"}],
@@ -634,7 +644,7 @@ const PLACES = [
     cat: ["한식"],
     addr: "서울 서초구 서초대로50길 14 2층",
     keyword: "닭다방 닭갈비 교대직영점",
-    note: "출발하기 전에 몇분쯤 도착할 것 같다고 전화주문하면 도착해서 바로 먹을수있음 / 점심엔 볶음밥 무료이니 추천~!",
+    note: "출발하기 전에 몇분쯤 도착할 것 같다고 전화주문하면 도착해서 바로 먹을수있음\n점심엔 볶음밥 무료이니 추천~!",
     rating: 4.0,
     tags: ["점심"],
     photos: [{"src": "images/1613564673_main_1.jpg", "cap": ""}],
@@ -709,7 +719,7 @@ const PLACES = [
     cat: ["카페"],
     addr: "서울 서초구 서초대로56길 18 1층",
     keyword: "오르빈 교대역점",
-    note: "베이글 샌드위치 집 은근 양 많고, 맛있음 / 매장에서먹으면 음료 필수 주문규칙 있음",
+    note: "베이글 샌드위치 집 은근 양 많고, 맛있음\n매장에서먹으면 음료 필수 주문규칙 있음",
     rating: 4.0,
     photos: [{"src": "images/1039608726_main_1.jpg", "cap": ""}],
   },
@@ -736,7 +746,7 @@ const PLACES = [
     cat: ["일식"],
     addr: "서울 서초구 서초중앙로 125",
     keyword: "교대왕돈까스",
-    note: "로이어즈 타워 지하 돈까스집 부드러운 치킨까스 맛집!! 가성비좋음 근데 음식이 늦게나올 가능성 높음 주의 / 매운소스 먹고싶으면 음식나올떄 매운소스 달라고하면 그냥 추가로 주심",
+    note: "로이어즈 타워 지하 돈까스집 부드러운 치킨까스 맛집!! 가성비좋음 근데 음식이 늦게나올 가능성 높음 주의\n매운소스 먹고싶으면 음식나올떄 매운소스 달라고하면 그냥 추가로 주심",
     rating: 4.0,
     tags: ["가성비"],
     photos: [{"src": "images/36792171_main_1.jpg", "cap": ""}],
@@ -1025,6 +1035,8 @@ function wayClick(i){
 }
 
 function closePopup(){ if (popup){ popup.setMap(null); popup = null; } }
+function nl2br(s){ return (s || '').replace(/\n/g, '<br>'); }
+function galTo(i){ const g = document.getElementById('gal'); if (g) g.scrollTo({ left: i * g.clientWidth, behavior: 'smooth' }); }
 
 function openInfo(p, i){
   const hasLoc = p.lat && p.lng;
@@ -1034,7 +1046,7 @@ function openInfo(p, i){
     <button class="x" onclick="closePopup()">✕</button>
     <div class="n">${p.name}</div>
     <div class="c">${catsOf(p).map(labelOf).join(' · ')}${p.price ? ' · '+p.price : ''}${p.rating ? ' · <span class="star">⭐ '+p.rating+'</span>' : ''}</div>
-    <div class="d">${[p.menu, p.note, p._addr].filter(Boolean).join('<br>') || '맛집 정보를 채워주세요'}</div>
+    <div class="d">${[p.menu, nl2br(p.note), p._addr].filter(Boolean).join('<br>') || '맛집 정보를 채워주세요'}</div>
     <div class="lk">
       <a class="m" href="javascript:void(0)" onclick="openDetail(${i})">📷 사진·상세</a>
       ${hasLoc ? `<a class="w" href="javascript:void(0)" onclick="wayClick(${i})">길찾기</a>` : ''}
@@ -1054,10 +1066,9 @@ function openDetail(i){
   const hasLoc = p.lat && p.lng;
 
   const gallery = photos.length
-    ? `<div class="gallery">${photos.map(ph =>
-        `<img class="ph" src="${ph.src}" alt="${ph.cap||p.name}" onclick="window.open(this.src,'_blank')"
-              onerror="this.style.display='none'">`).join('')}</div>
-       ${photos.some(ph=>ph.cap) ? `<div class="pcap">${photos.map(ph=>ph.cap).filter(Boolean).join(' · ')}</div>` : ''}`
+    ? `<div class="gallery" id="gal">${photos.map(ph =>
+        `<div class="slide"><img class="ph" src="${ph.src}" alt="${ph.cap||p.name}" onclick="window.open(this.src,'_blank')" onerror="this.parentNode.style.display='none'">${ph.cap ? `<span class="caplabel">📋 ${ph.cap}</span>` : ''}</div>`).join('')}</div>
+       ${photos.length>1 ? `<div class="thumbs">${photos.map((ph,gi) => `<img class="th ${ph.cap?'ismenu':''}" src="${ph.src}" title="${ph.cap||'사진'}" onclick="galTo(${gi})">`).join('')}</div>` : ''}`
     : `<div class="nogallery">🍽 사진이 아직 없어요</div>`;
 
   document.getElementById('modalContent').innerHTML = `
@@ -1070,7 +1081,7 @@ function openDetail(i){
         ${p.rating ? '<span style="color:#f59e0b;font-weight:600">⭐ '+p.rating+'</span>' : ''}
       </div>
       ${p.menu ? `<div class="row"><b>🍽 메뉴</b> · ${p.menu}</div>` : ''}
-      ${p.note ? `<div class="row"><b>📝 메모</b> · ${p.note}</div>` : ''}
+      ${p.note ? `<div class="row"><b>📝 메모</b> · ${nl2br(p.note)}</div>` : ''}
       ${p._addr ? `<div class="row"><b>📍 주소</b> · ${p._addr}</div>` : ''}
       ${(p.tags&&p.tags.length) ? `<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>` : ''}
       ${(map_url||hasLoc) ? `<div class="links">
@@ -1169,7 +1180,7 @@ function render(){
       <div class="meta">
         ${p.menu ? '🍽 '+p.menu+'<br>':''}
         ${p.price ? '💰 '+p.price+'&nbsp;&nbsp;':''}${p.rating ? '⭐ '+p.rating:''}
-        ${p.note ? '<br>📝 '+p.note:''}
+        ${p.note ? '<br>📝 '+nl2br(p.note):''}
       </div>
       ${(p.tags&&p.tags.length)?`<div class="tags">${p.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>`:''}
     </div>`;
