@@ -364,6 +364,32 @@
   .modal .body .links a.m { color: var(--ink); background: #f4f4f5; }
   .modal .body .links a.w { color: #fff; background: var(--ink); }
 
+  /* 댓글 */
+  .modal .cmts { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .modal .cmts-h { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .modal .cmts-h span { color: var(--faint); font-weight: 600; }
+  .modal .cmt-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .modal .cmt { background: var(--surface); border-radius: 12px; padding: 10px 13px; }
+  .modal .cmt-nick { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .modal .cmt-text { font-size: 13.5px; color: #3f3f46; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+  .modal .cmt-empty { font-size: 13px; color: var(--faint); padding: 6px 0; }
+  .modal .cmt-form .c_nick {
+    width: 130px; font-family: inherit; font-size: 13px; color: var(--ink);
+    padding: 9px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface);
+    outline: none; margin-bottom: 8px;
+  }
+  .modal .cmt-form .c_row { display: flex; gap: 8px; }
+  .modal .cmt-form .c_text {
+    flex: 1 1 auto; min-width: 0; font-family: inherit; font-size: 13px; color: var(--ink);
+    padding: 9px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); outline: none;
+  }
+  .modal .cmt-form .c_nick:focus, .modal .cmt-form .c_text:focus { border-color: var(--ink); background: #fff; }
+  .modal .cmt-form .c_send {
+    flex: 0 0 auto; border: none; cursor: pointer; background: var(--ink); color: #fff;
+    font-family: inherit; font-weight: 600; font-size: 13px; padding: 0 16px; border-radius: 10px;
+  }
+  .modal .cmt-form .c_send:hover { background: #000; }
+
   @media (max-width: 720px) {
     .header { padding: 14px 16px; gap: 10px; }
     .toolbar { padding: 12px 14px; gap: 9px; }
@@ -432,8 +458,8 @@
           <input id="f_rating" type="number" min="1" max="5" step="0.5" placeholder="4.5">
         </div>
         <div>
-          <label>제보자 <span class="opt">(선택)</span></label>
-          <input id="f_nick" type="text" placeholder="닉네임">
+          <label>제보자(닉네임) <span class="req">*</span></label>
+          <input id="f_nick" type="text" placeholder="닉네임" maxlength="20">
         </div>
       </div>
       <label>대표사진 URL <span class="opt">(선택)</span></label>
@@ -462,6 +488,8 @@
    ========================================================================= */
 const PLACES = [
   {
+    id: "1419122535",
+    by: "AR",
     name: "담뿍화로된장찌개 교대 6호점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 16 1층 담뿍화로된장 교대점",
@@ -472,6 +500,8 @@ const PLACES = [
     photos: [{"src": "images/1419122535_main_1.jpg", "cap": ""}, {"src": "images/1419122535_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1419122535_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "19878202",
+    by: "AR",
     name: "명동 곰돌이",
     cat: ["한식"],
     addr: "서울 서초구 서초대로55길 11",
@@ -481,6 +511,8 @@ const PLACES = [
     photos: [{"src": "images/19878202_main_1.jpg", "cap": ""}, {"src": "images/19878202_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1530031734",
+    by: "AR",
     name: "우된장 교대본점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 11 1층 101호",
@@ -491,6 +523,8 @@ const PLACES = [
     photos: [{"src": "images/1530031734_main_1.jpg", "cap": ""}, {"src": "images/1530031734_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1033062058",
+    by: "AR",
     name: "방이편백육분삼십 교대점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 3 1층",
@@ -501,6 +535,8 @@ const PLACES = [
     photos: [{"src": "images/1033062058_main_1.jpg", "cap": ""}, {"src": "images/1033062058_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1033062058_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1776592928",
+    by: "AR",
     name: "차반자리",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로26길 6 1층",
@@ -510,6 +546,8 @@ const PLACES = [
     photos: [{"src": "images/1776592928_main_1.jpg", "cap": ""}, {"src": "images/1776592928_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "18366711",
+    by: "AR",
     name: "기와집순두부 서초점",
     cat: ["한식"],
     addr: "서울 서초구 서초대로51길 14 지하1층",
@@ -519,6 +557,8 @@ const PLACES = [
     photos: [{"src": "images/18366711_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1257140055",
+    by: "AR",
     name: "유성옥 돼지국밥 서초본점",
     cat: ["한식"],
     addr: "서울 서초구 서초대로51길 14 104호",
@@ -528,6 +568,8 @@ const PLACES = [
     photos: [{"src": "images/1257140055_main_1.jpg", "cap": ""}, {"src": "images/1257140055_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1496024487",
+    by: "AR",
     name: "스시한",
     cat: ["일식"],
     addr: "서울 서초구 서초대로51길 11 2층",
@@ -538,6 +580,8 @@ const PLACES = [
     photos: [{"src": "images/1496024487_main_1.jpg", "cap": ""}, {"src": "images/1496024487_menu_1.png", "cap": "메뉴판"}],
   },
   {
+    id: "18591103",
+    by: "AR",
     name: "서리풀남도",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로 146",
@@ -547,6 +591,8 @@ const PLACES = [
     photos: [{"src": "images/18591103_main_1.jpg", "cap": ""}, {"src": "images/18591103_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1599836460",
+    by: "AR",
     name: "친화력",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초중앙로 142 1층 오비노미오 안",
@@ -557,6 +603,8 @@ const PLACES = [
     photos: [{"src": "images/1599836460_main_1.jpg", "cap": ""}],
   },
   {
+    id: "34363269",
+    by: "AR",
     name: "사보텐 교대역점",
     cat: ["일식"],
     addr: "서울 서초구 서초중앙로24길 20",
@@ -567,6 +615,8 @@ const PLACES = [
     photos: [{"src": "images/34363269_main_1.jpg", "cap": ""}, {"src": "images/34363269_menu_1.png", "cap": "메뉴판"}],
   },
   {
+    id: "1084410851",
+    by: "AR",
     name: "호경전 서초점",
     cat: ["중식", "회식·술"],
     addr: "서울 서초구 서초중앙로24길 22",
@@ -577,6 +627,8 @@ const PLACES = [
     photos: [{"src": "images/1084410851_main_1.jpg", "cap": ""}],
   },
   {
+    id: "36643505",
+    by: "AR",
     name: "봄불고기",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로24길 27 G5센트럴프라자 B105",
@@ -586,6 +638,8 @@ const PLACES = [
     photos: [{"src": "images/36643505_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1620580872",
+    by: "AR",
     name: "이자카야나무 교대점",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초대로50길 30 2층",
@@ -596,6 +650,8 @@ const PLACES = [
     photos: [{"src": "images/1620580872_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1010064415",
+    by: "AR",
     name: "세광양대창 교대본점",
     cat: ["한식", "회식·술"],
     addr: "서울 서초구 반포대로28길 79 1, 2층",
@@ -606,6 +662,8 @@ const PLACES = [
     photos: [{"src": "images/1010064415_main_1.jpg", "cap": ""}, {"src": "images/1010064415_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1234439967",
+    by: "AR",
     name: "코어커피 로스터스 교대",
     cat: ["카페"],
     addr: "서울 서초구 서초중앙로22길 40 1층 코어커피로스터스",
@@ -615,6 +673,8 @@ const PLACES = [
     photos: [{"src": "images/1234439967_main_1.jpg", "cap": ""}, {"src": "images/1234439967_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "55004660",
+    by: "AR",
     name: "광해즉석떡볶이",
     cat: ["분식"],
     addr: "서울 서초구 서초대로 275 중앙빌딩",
@@ -625,6 +685,8 @@ const PLACES = [
     photos: [{"src": "images/55004660_main_1.jpg", "cap": ""}, {"src": "images/55004660_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/55004660_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1025527177",
+    by: "AR",
     name: "꾸아 교대점",
     cat: ["아시안"],
     addr: "서울 서초구 서초중앙로22길 45 1층 2호",
@@ -634,6 +696,8 @@ const PLACES = [
     photos: [{"src": "images/1025527177_main_1.jpg", "cap": ""}],
   },
   {
+    id: "2090099991",
+    by: "AR",
     name: "사운즈커피 법원교대역점",
     cat: ["카페"],
     addr: "서울 서초구 서초대로51길 16 1층",
@@ -643,6 +707,8 @@ const PLACES = [
     photos: [{"src": "images/2090099991_main_1.jpg", "cap": ""}, {"src": "images/2090099991_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1397910489",
+    by: "AR",
     name: "인더 페이스트리",
     cat: ["카페"],
     addr: "서울 서초구 서초대로 357 104호",
@@ -653,6 +719,8 @@ const PLACES = [
     photos: [{"src": "images/1397910489_main_1.jpg", "cap": ""}],
   },
   {
+    id: "2034510532",
+    by: "AR",
     name: "제제집 교대점",
     cat: ["한식"],
     addr: "서울 서초구 서초대로54길 29 1층",
@@ -662,6 +730,8 @@ const PLACES = [
     photos: [{"src": "images/2034510532_main_1.jpg", "cap": ""}, {"src": "images/2034510532_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "19936293",
+    by: "AR",
     name: "바지락명가",
     cat: ["한식"],
     addr: "서울 서초구 서초대로 317 건원빌딩 지하 1층",
@@ -671,6 +741,8 @@ const PLACES = [
     photos: [{"src": "images/19936293_main_1.jpg", "cap": ""}, {"src": "images/19936293_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "2032233538",
+    by: "AR",
     name: "스시교",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 법원로2길 15 지층 101호",
@@ -681,6 +753,8 @@ const PLACES = [
     photos: [{"src": "images/2032233538_main_1.png", "cap": ""}, {"src": "images/2032233538_menu_1.png", "cap": "메뉴판"}],
   },
   {
+    id: "1289281377",
+    by: "AR",
     name: "네모오징어 서초법원점",
     cat: ["한식"],
     addr: "서울 서초구 법원로1길 1 1층 103호",
@@ -691,6 +765,8 @@ const PLACES = [
     photos: [{"src": "images/1289281377_main_1.jpg", "cap": ""}, {"src": "images/1289281377_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1166762456",
+    by: "AR",
     name: "솔솥 교대역점",
     cat: ["한식"],
     addr: "서울 서초구 반포대로26길 63 1층",
@@ -700,6 +776,8 @@ const PLACES = [
     photos: [{"src": "images/1166762456_main_1.jpg", "cap": ""}, {"src": "images/1166762456_main_2.jpg", "cap": ""}, {"src": "images/1166762456_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1166762456_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1111401166",
+    by: "AR",
     name: "이가네양꼬치 교대2호직영점",
     cat: ["아시안", "회식·술"],
     addr: "서울 서초구 서초대로50길 105 1층",
@@ -710,6 +788,8 @@ const PLACES = [
     photos: [{"src": "images/1111401166_main_1.jpg", "cap": ""}, {"src": "images/1111401166_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1581362267",
+    by: "AR",
     name: "청기와타운 교대점",
     cat: ["한식", "회식·술"],
     addr: "서울 서초구 서초대로48길 33 1층",
@@ -720,6 +800,8 @@ const PLACES = [
     photos: [{"src": "images/1581362267_main_1.jpg", "cap": ""}, {"src": "images/1581362267_menu_1.png", "cap": "메뉴판"}],
   },
   {
+    id: "1613564673",
+    by: "AR",
     name: "닭다방 닭갈비 교대직영점",
     cat: ["한식"],
     addr: "서울 서초구 서초대로50길 14 2층",
@@ -730,6 +812,8 @@ const PLACES = [
     photos: [{"src": "images/1613564673_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1955824166",
+    by: "AR",
     name: "춘보만두 서초교대점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로22길 22-7 1층",
@@ -739,6 +823,8 @@ const PLACES = [
     photos: [{"src": "images/1955824166_main_1.jpg", "cap": ""}, {"src": "images/1955824166_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1652220988",
+    by: "AR",
     name: "가츠오 교대본점",
     cat: ["일식"],
     addr: "서울 서초구 서초중앙로20길 21 1층 가츠오",
@@ -748,6 +834,8 @@ const PLACES = [
     photos: [{"src": "images/1652220988_main_1.png", "cap": ""}, {"src": "images/1652220988_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1617515432",
+    by: "AR",
     name: "중화백반 교대점",
     cat: ["중식"],
     addr: "서울 서초구 서초중앙로20길 18 1층",
@@ -757,6 +845,8 @@ const PLACES = [
     photos: [{"src": "images/1617515432_main_1.jpg", "cap": ""}, {"src": "images/1617515432_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "2096938804",
+    by: "AR",
     name: "녹담샤브 교대점",
     cat: ["아시안"],
     addr: "서울 서초구 서초대로54길 32 지하1층",
@@ -767,6 +857,8 @@ const PLACES = [
     photos: [{"src": "images/2096938804_main_1.jpg", "cap": ""}],
   },
   {
+    id: "37327008",
+    by: "AR",
     name: "밀숲 교대점",
     cat: ["한식"],
     addr: "서울 서초구 서초대로54길 33",
@@ -776,6 +868,8 @@ const PLACES = [
     photos: [{"src": "images/37327008_main_1.jpg", "cap": ""}, {"src": "images/37327008_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "38597168",
+    by: "AR",
     name: "함평원 서초점",
     cat: ["한식", "회식·술"],
     addr: "서울 서초구 서초대로 287 석정빌딩 지하1층",
@@ -786,6 +880,8 @@ const PLACES = [
     photos: [{"src": "images/38597168_main_1.jpg", "cap": ""}, {"src": "images/38597168_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1772664883",
+    by: "AR",
     name: "담미온 교대역점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로24길 9",
@@ -795,6 +891,8 @@ const PLACES = [
     photos: [{"src": "images/1772664883_main_1.jpg", "cap": ""}, {"src": "images/1772664883_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1039608726",
+    by: "AR",
     name: "오르빈 교대역점",
     cat: ["카페"],
     addr: "서울 서초구 서초대로56길 18 1층",
@@ -804,6 +902,8 @@ const PLACES = [
     photos: [{"src": "images/1039608726_main_1.jpg", "cap": ""}],
   },
   {
+    id: "2072037280",
+    by: "AR",
     name: "카츠한상 교대본점",
     cat: ["일식"],
     addr: "서울 서초구 서초중앙로22길 25 116호",
@@ -813,6 +913,8 @@ const PLACES = [
     photos: [{"src": "images/2072037280_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1356628877",
+    by: "AR",
     name: "종로수제비교대점",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로22길 25 1층 112호",
@@ -822,6 +924,8 @@ const PLACES = [
     photos: [{"src": "images/1356628877_main_1.jpg", "cap": ""}],
   },
   {
+    id: "36792171",
+    by: "AR",
     name: "교대왕돈까스",
     cat: ["일식"],
     addr: "서울 서초구 서초중앙로 125",
@@ -832,6 +936,8 @@ const PLACES = [
     photos: [{"src": "images/36792171_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1611310632",
+    by: "AR",
     name: "스키당 교대점",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초중앙로22길 25 2층 202호",
@@ -842,6 +948,8 @@ const PLACES = [
     photos: [{"src": "images/1611310632_main_1.jpg", "cap": ""}, {"src": "images/1611310632_menu_1.png", "cap": "메뉴판"}],
   },
   {
+    id: "1362576778",
+    by: "AR",
     name: "플디 케이크하우스 서초교대점",
     cat: ["카페"],
     addr: "서울 서초구 서초중앙로22길 25 1층 106-2호",
@@ -851,6 +959,8 @@ const PLACES = [
     photos: [{"src": "images/1362576778_main_1.jpg", "cap": ""}, {"src": "images/1362576778_menu_1.jpg", "cap": "메뉴판"}, {"src": "images/1362576778_menu_2.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "910387379",
+    by: "AR",
     name: "강릉교동짬뽕 교대점",
     cat: ["중식"],
     addr: "서울 서초구 서초대로54길 24",
@@ -860,6 +970,8 @@ const PLACES = [
     photos: [{"src": "images/910387379_main_1.jpg", "cap": ""}, {"src": "images/910387379_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1413856016",
+    by: "AR",
     name: "담떡",
     cat: ["한식"],
     addr: "서울 서초구 서초중앙로22길 22-7 1층 101호 담떡",
@@ -869,6 +981,8 @@ const PLACES = [
     photos: [{"src": "images/1413856016_main_1.jpg", "cap": ""}, {"src": "images/1413856016_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "37891352",
+    by: "AR",
     name: "미나미 서초점",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초대로58길 31-2 1층 미나미",
@@ -879,6 +993,8 @@ const PLACES = [
     photos: [{"src": "images/37891352_main_1.jpg", "cap": ""}],
   },
   {
+    id: "1918289213",
+    by: "AR",
     name: "산도 교대본점",
     cat: ["카페"],
     addr: "서울 서초구 서초대로56길 38 1층",
@@ -888,6 +1004,8 @@ const PLACES = [
     photos: [{"src": "images/1918289213_main_1.png", "cap": ""}, {"src": "images/1918289213_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "1174980430",
+    by: "AR",
     name: "오토김밥 서초본점",
     cat: ["분식"],
     addr: "서울 서초구 서초대로54길 48-3 1층",
@@ -898,6 +1016,8 @@ const PLACES = [
     photos: [{"src": "images/1174980430_main_1.jpg", "cap": ""}, {"src": "images/1174980430_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "2092400397",
+    by: "AR",
     name: "육회바른연어 교대점",
     cat: ["일식", "회식·술"],
     addr: "서울 서초구 서초중앙로22길 25 111호",
@@ -907,6 +1027,8 @@ const PLACES = [
     photos: [{"src": "images/2092400397_main_1.jpg", "cap": ""}, {"src": "images/2092400397_menu_1.jpg", "cap": "메뉴판"}],
   },
   {
+    id: "20627972",
+    by: "AR",
     name: "수라",
     cat: ["한식"],
     addr: "서울 서초구 서초대로 335 서흥빌딩",
@@ -946,6 +1068,8 @@ const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxcFAaAOn6fSSHaG8FSq
 
 /* ===================== 이하 로직 (수정 불필요) ===================== */
 let map, ps, geocoder, popup = null;
+let currentDetailId = null;   // 현재 열린 상세 모달의 가게 id
+let COMMENTS = {};            // { 가게id: [ {nick,text,t}, ... ] }
 const activeCats = new Set(Object.keys(CATEGORIES));
 let activeIdx = -1;
 
@@ -1170,6 +1294,7 @@ function openDetail(i){
         ${catsOf(p).map(cc => `<span class="badge" style="background:${colorOf(cc)}">${labelOf(cc)}</span>`).join('')}
         ${p.price ? '<span>'+p.price+'</span>' : ''}
         ${p.rating ? '<span style="color:#f59e0b;font-weight:600">⭐ '+p.rating+'</span>' : ''}
+        ${p.by ? '<span>🙋 '+esc(p.by)+'</span>' : ''}
       </div>
       ${p.menu ? `<div class="row"><b>🍽 메뉴</b> · ${p.menu}</div>` : ''}
       ${p.note ? `<div class="row"><b>📝 메모</b> · ${nl2br(p.note)}</div>` : ''}
@@ -1179,10 +1304,25 @@ function openDetail(i){
         ${map_url ? `<a class="m" href="${p.placeUrl||map_url}" target="_blank">카카오맵에서 보기</a>` : ''}
         ${hasLoc ? `<a class="w" href="javascript:void(0)" onclick="wayClick(${i})">길찾기</a>` : ''}
       </div>` : ''}
+      <div class="cmts">
+        <div class="cmts-h">💬 댓글 <span id="cmtcount"></span></div>
+        <div class="cmt-list" id="cmtList"></div>
+        <div class="cmt-form">
+          <input id="c_nick" class="c_nick" placeholder="닉네임 *" maxlength="20">
+          <div class="c_row">
+            <input id="c_text" class="c_text" placeholder="댓글 남기기…" maxlength="200"
+                   onkeydown="if(event.key==='Enter')submitComment('${p.id}')">
+            <button class="c_send" onclick="submitComment('${p.id}')">등록</button>
+          </div>
+        </div>
+      </div>
     </div>`;
+  currentDetailId = String(p.id);
+  try { const nk = localStorage.getItem('fm_nick'); if (nk) document.getElementById('c_nick').value = nk; } catch(e){}
+  renderComments(currentDetailId);
   document.getElementById('modal').classList.add('open');
 }
-function closeDetail(){ document.getElementById('modal').classList.remove('open'); }
+function closeDetail(){ document.getElementById('modal').classList.remove('open'); currentDetailId = null; }
 
 // ── 맛집 제보 폼 ──
 function openSubmit(){ document.getElementById('submitModal').classList.add('open'); }
@@ -1191,17 +1331,64 @@ function fval(id){ return (document.getElementById(id).value || '').trim(); }
 function submitTip(){
   const msg = document.getElementById('formmsg');
   const link = fval('f_link');
+  const nick = fval('f_nick');
   if (!/^https?:\/\//.test(link)){ msg.textContent = '네이버 지도 링크를 넣어주세요.'; msg.className = 'formmsg err'; return; }
+  if (!nick){ msg.textContent = '닉네임을 입력해주세요. (필수)'; msg.className = 'formmsg err'; return; }
   if (!SUBMIT_URL){ msg.textContent = '⚠️ 제보 받기가 아직 설정 전이에요. (관리자가 SUBMIT_URL 설정 필요)'; msg.className = 'formmsg err'; return; }
-  const payload = { link, memo: fval('f_memo'), rating: fval('f_rating'), photo: fval('f_photo'), menu: fval('f_menu'), nick: fval('f_nick') };
+  try { localStorage.setItem('fm_nick', nick); } catch(e){}
+  const payload = { type: 'tip', link, memo: fval('f_memo'), rating: fval('f_rating'), photo: fval('f_photo'), menu: fval('f_menu'), nick };
   msg.textContent = '보내는 중…'; msg.className = 'formmsg';
   const done = () => {
     msg.textContent = '✅ 제보 감사합니다! 검토 후 지도에 추가할게요.'; msg.className = 'formmsg ok';
-    ['f_link','f_memo','f_rating','f_photo','f_menu','f_nick'].forEach(id => document.getElementById(id).value = '');
+    ['f_link','f_memo','f_rating','f_photo','f_menu'].forEach(id => document.getElementById(id).value = '');
   };
   fetch(SUBMIT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
     .then(done).catch(done);
 }
+// ── 댓글 ──
+function esc(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function renderComments(id){
+  const list = document.getElementById('cmtList');
+  if (!list) return;
+  const arr = COMMENTS[String(id)] || [];
+  const cnt = document.getElementById('cmtcount');
+  if (cnt) cnt.textContent = arr.length ? arr.length : '';
+  list.innerHTML = arr.length
+    ? arr.map(c => `<div class="cmt"><div class="cmt-nick">${esc(c.nick)||'익명'}</div><div class="cmt-text">${esc(c.text)}</div></div>`).join('')
+    : `<div class="cmt-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</div>`;
+}
+
+function submitComment(id){
+  const nick = fval('c_nick'), text = fval('c_text');
+  if (!nick){ alert('닉네임을 입력해주세요. (필수)'); return; }
+  if (!text){ alert('댓글 내용을 입력해주세요.'); return; }
+  if (!SUBMIT_URL){ alert('댓글 기능이 아직 설정 전이에요.'); return; }
+  try { localStorage.setItem('fm_nick', nick); } catch(e){}
+  const k = String(id);
+  (COMMENTS[k] = COMMENTS[k] || []).push({ nick, text });   // 낙관적 표시
+  renderComments(k);
+  document.getElementById('c_text').value = '';
+  fetch(SUBMIT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ type: 'comment', placeId: k, nick, text }) }).catch(()=>{});
+}
+
+function loadComments(){
+  if (!SUBMIT_URL) return;
+  const cb = 'cmtcb_' + Date.now();
+  window[cb] = (arr) => {
+    const map = {};
+    (arr || []).forEach(c => { const k = String(c.placeId); (map[k] = map[k] || []).push(c); });
+    COMMENTS = map;
+    if (currentDetailId) renderComments(currentDetailId);
+    try { delete window[cb]; } catch(e){}
+  };
+  const s = document.createElement('script');
+  s.src = SUBMIT_URL + '?callback=' + cb + '&_=' + Date.now();
+  s.onerror = () => { try { delete window[cb]; } catch(e){} };
+  document.body.appendChild(s);
+}
+
 document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail(); closeSubmit(); } });
 
 function selectPlace(i){
@@ -1298,6 +1485,7 @@ function render(){
 }
 
 initSidebar();
+loadComments();
 loadKakao();
 </script>
 </body>
